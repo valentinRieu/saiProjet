@@ -2,10 +2,11 @@
 #define ALL_H
 
 #include "common.h"
+#include "struct.h"
+#include "interaction.h"
 
 #include "utils.h"
 #include "display.h"
-#include "bresenham.h"
 #include "setup.h"
 #define X_MIN -2048
 #define X_MAX 2048
