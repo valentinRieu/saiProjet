@@ -26,4 +26,10 @@ extern bonhomme bonhommes[NB_BONHOMMES];
 extern rect carte;
 
 
+void init();
+void initMaisons();
+void initArbres();
+void initBonhommes();
+void initAnimaux();
+
 #endif

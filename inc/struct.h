@@ -38,7 +38,7 @@ typedef struct s_pyramide {
 } pyramide;
 
 typedef struct s_cylindre {
-	point centre;
+	point centre;//position+vecteur
 	int rayon;
 	int hauteur;
 } cylindre;
