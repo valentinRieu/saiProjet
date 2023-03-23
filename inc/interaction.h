@@ -10,6 +10,10 @@ extern animal animaux[NB_ANIMAUX];
 extern bonhomme bonhommes[NB_BONHOMMES];
 extern rect carte;
 
+extern point posMaisons[NB_MAISONS];
+extern point posArbres[NB_ARBRES];
+extern point posAnimaux[NB_ANIMAUX];
+extern point posBonhommes[NB_BONHOMMES];
 
 void init();
 void initCarte();

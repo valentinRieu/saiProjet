@@ -50,7 +50,7 @@ typedef struct s_boule {
 typedef struct s_maison {
 	int id;
 
-	position p;
+	point p;
 	rect batiment;
 	int hauteurToit;
 
@@ -61,7 +61,7 @@ typedef struct s_maison {
 
 typedef struct s_arbre {
 	int id;
-	position p;
+	point p;
 
 	cylindre tronc;
 
