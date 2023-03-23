@@ -1,9 +1,6 @@
 #ifndef STRUCT_H
 #define STRUCT_H
 
-#include "GL/gl.h"
-#include "GL/glut.h" 
-
 
 #define NB_PATTES 4
 
@@ -22,7 +19,9 @@ typedef struct s_couleur {
 
 typedef struct s_position {
 	point p;
-	point direction;
+	point directionAvant;
+	point directionCote;
+	point directionDessus;
 } position;
 
 typedef struct s_rect {
@@ -38,14 +37,12 @@ typedef struct s_pyramide {
 } pyramide;
 
 typedef struct s_cylindre {
-	point centre;//position+vecteur
 	int rayon;
 	int hauteur;
 } cylindre;
 
 
 typedef struct s_boule {
-	point centre;
 	int rayon;
 } boule;
 
@@ -69,8 +66,6 @@ typedef struct s_arbre {
 	cylindre tronc;
 
 	boule tete;
-
-	rect hitbox;
 } arbre;
 
 typedef struct s_animal {
@@ -80,7 +75,7 @@ typedef struct s_animal {
 
 	rect corps;
 
-	cylindre pattes[NB_PATTES];
+	cylindre pattes;
 
 	cylindre cou;
 	boule tete;
@@ -96,8 +91,8 @@ typedef struct s_bonhomme {
 
 	rect corps;
 
-	cylindre pieds[2];
-	cylindre bras[2];
+	cylindre pieds;
+	cylindre bras;
 
 	cylindre cou;
 
@@ -105,6 +100,5 @@ typedef struct s_bonhomme {
 
 	rect hitbox;
 } bonhomme;
-
 
 #endif

@@ -17,7 +17,7 @@ BIN = $(BINDIR)/main
 all: $(BIN)
 
 $(BIN): $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -o $@ $(GL)
+	$(CC) $(FLAGS) $(OBJS) -o $@ $(GL) $(LM)
 
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(FLAGS) $(INCLUDES) -c $< -o $@ $(GL)

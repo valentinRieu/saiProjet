@@ -9,21 +9,27 @@ animal animaux[NB_ANIMAUX];
 bonhomme bonhommes[NB_BONHOMMES];
 
 rect carte;
-void initMaisons();
+
 void init(){
+	srand(time(NULL));
+	initCarte();
     initMaisons();
     initArbres();
     initBonhommes();
-    initAnimals();
+    initAnimaux();
 }
 
 position newRandomPosition(){
+	int rand;
     position p;
     p.p = (point){100, 100, 100};
     p.direction = (point){1,1,0};
     return p;
 }
 
+void initCarte(){
+	carte = (rect){HAUTEUR_CARTE, LARGEUR_CARTE, LONGUEUR_CARTE};
+}
 void initMaisons(){
     int i;
     
@@ -31,7 +37,7 @@ void initMaisons(){
         maisons[i].id = i;
         maisons[i].p = newRandomPosition();
         maisons[i].batiment = (rect){20, 20, 20};
-        maisons[i].hauteurToit = 10;
+        maisons[i].hauteurToit = 20;
         maisons[i].couleurMur = (couleur){1,1,1};
         maisons[i].couleurToit = (couleur){1,1,1};
     }
@@ -43,9 +49,8 @@ void initArbres(){
     for(i=0;i<NB_ARBRES;i++){
         arbres[i].id = i;
         arbres[i].p = newRandomPosition();
-        arbres[i].tronc = (cylindre){(point){20, 20, 20},20,0};
-        arbres[i].tete = (boule){(point){20, 20, 20},20};
-        arbres[i].hitbox = (rect){20,20,20};
+        arbres[i].tronc = (cylindre){5,15};
+        arbres[i].tete = (boule){10};
     }
 }
 
@@ -55,15 +60,23 @@ void initBonhommes(){
     for(i=0;i<NB_BONHOMMES;i++){
         bonhommes[i].id = i;
         bonhommes[i].p = newRandomPosition();
-        bonhommes[i].pieds[1] = (cylindre){(point){20, 20, 20},20,0};
-        bonhommes[i].pieds[2] = (cylindre){(point){20, 20, 20},20,0};
-        bonhommes[i].bras[1] = (cylindre){(point){20, 20, 20},20,0};
-        bonhommes[i].pieds[2] = (cylindre){(point){20, 20, 20},20,0};
-        bonhommes[i].tete = (boule){(point){20, 20, 20},20};
-        bonhommes[i].hitbox = (rect){20,20,20};
+		bonhommes[i].corps = (rect){5, 4, 4};
+        bonhommes[i].pieds = (cylindre){2,5};
+		bonhommes[i].bras = (cylindre){2,5};
+        bonhommes[i].tete = (boule){5};
+        bonhommes[i].hitbox = (rect){12,6,6};
     }
 }
 
 void initAnimaux(){
-
+    int i;
+    
+    for(i=0;i<NB_ANIMAUX;i++){
+        animaux[i].id = i;
+        animaux[i].p = newRandomPosition();
+		animaux[i].corps = (rect){2,4,4};
+        animaux[i].pattes = (cylindre){2,1};
+        animaux[i].tete = (boule){4};
+        animaux[i].hitbox = (rect){6,10,4};
+    }
 }
