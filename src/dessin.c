@@ -30,7 +30,10 @@ void dessinerCarre(point p1, point p2, point p3, point p4){
 
 void dessiner(){
     dessinerCarte();
-    
+    dessinerMaisons();
+	dessinerArbres();
+	dessinerBonhommes();
+	dessinerAnimaux();
 }
 
 void dessinerCarte(){
@@ -55,31 +58,40 @@ void dessinerCarte(){
 void dessinerMaisons(){
     int i;
     point p;
-    rect r;
     for(i=0;i<NB_MAISONS;i++){
-        p = maisons[i].p.p;
-        r = maisons[i].batiment;
-        glColor3f(maisons[i].couleurMur.r,maisons[i].couleurMur.g,maisons[i].couleurMur.b);
-            
-        dessinerCarreX(p.x,p.y,p.y+r.largeur,p.z,p.z+r.hauteur);
-        dessinerCarreX(p.x+r.longueur,p.y,p.y+r.largeur,p.z,p.z+r.hauteur);
-            
-        dessinerCarreY(p.x,p.x+r.longueur,p.y,p.z,p.z+r.hauteur);
-        dessinerCarreY(p.x,p.x+r.longueur,p.y+r.largeur,p.z,p.z+r.hauteur);
-            
-        glColor3f(maisons[i].couleurToit.r,maisons[i].couleurToit.g,maisons[i].couleurToit.b);
-        dessinerCarre((point){p.x,p.y,p.z+r.hauteur},(point){p.x+r.longueur,p.y,p.z+r.hauteur},(point){p.x+r.longueur,p.y+r.largeur,p.z+r.hauteur+maisons[i].hauteurToit},(point){p.x,p.y+r.largeur,p.z+r.hauteur+maisons[i].hauteurToit});
+        p = maisons[i].pos;
+        glColor3f(1, 1, 1);
+        dessinerCarreX(p.x,p.y,p.y+40,0,30);
+        dessinerCarreX(p.x+40,p.y,p.y+40,0,30);
+        dessinerCarreY(p.x,p.x+40,p.y,0,30);
+        dessinerCarreY(p.x,p.x+40,p.y+40,0,30);
+        dessinerCarreZ(p.x,p.x+40,p.y,p.y+40,30);
     }
 }
 
 void dessinerArbres(){
-	
+	int i;
+	point p;
+	for(i=0;i<NB_ARBRES;i++){
+		p = arbres[i].pos;
+		
+	}
 }
 
 void dessinerBonhommes(){
-	
+	int i;
+	point p;
+	for(i=0;i<NB_BONHOMMES;i++){
+		p = bonhommes[i].pos;
+		
+	}
 }
 
 void dessinerAnimaux(){
-	
+	int i;
+	point p;
+	for(i=0;i<NB_ANIMAUX;i++){
+		p = animaux[i].pos;
+		
+	}
 }

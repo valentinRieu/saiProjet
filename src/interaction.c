@@ -1,119 +1,136 @@
 #include "interaction.h"
 
-void init(){
-    int i, j, i1=0,i2=0,i3=0,i4=0;
-    int rx=50, ry=50;
+void jouerBonhommes(){
+	int i, j;
 	
-	carte = (rect){HAUTEUR_CARTE, LARGEUR_CARTE, LONGUEUR_CARTE};
+	for(i=0;i<NB_BONHOMMES;i++){
+		j = lePlusProche(i, 0);//id
+		//fuir j
+		if(j==-1){
+			deplacerAlea(i, 0);
+		}else{
+			fuir(i, j);
+		}
+	}
+}
+
+void jouerAnimaux(){
+	int i, j;
 	
-    for(i=0;i<NB_MAISONS+NB_ARBRES+NB_ANIMAUX+NB_BONHOMMES;i++){
-		j=rand()%4;
-		switch(j){
-			case 0:
-				if(i1>=NB_MAISONS){
-					if(i2!<NB_ARBRES){
-						j=1;
-					}else if(i3<NB_ANIMAUX){
-						j=2;
-					}else{
-						j=3;
-					}
-				}
-			break;
-			case 1:
-				if(i2>=NB_ARBRES){
-					if(i1<NB_MAISONS){
-						j=0;
-					}else if(i3<NB_ANIMAUX){
-						j=2;
-					}else{
-						j=3;
-					}
-				}
-			break;
-			case 2:
-				if(i3>=NB_ANIMAUX){
-					if(i1<NB_MAISONS){
-						j=0;
-					}else if(i2<NB_ARBRES){
-						j=1;
-					}else{
-						j=3;
-					}
-				}
-			break;
-			default:
-				if(i4>=NB_BONHOMMES){
-					if(i1<NB_MAISONS){
-						j=0;
-					}else if(i2<NB_ARBRES){
-						j=1;
-					}else{
-						j=2;
-					}
-				}
+	for(i=0;i<NB_ANIMAUX;i++){
+		j = lePlusProche(i, 1);//id
+		//aller vers j
+		if(j==-1){
+			deplacerAlea(i, 1);
+		}else{
+			attraper(i, j);
 		}
-		switch(j){
-			case 0:
-				initMaison(rx, ry, i1);
-				i1++;
-			break;
-			case 1:
-				initArbre(rx, ry, i2);
-				i2++;
-			break;
-			case 2:
-				initAnimal(rx, ry, i3);
-				i3++;
-			break;
-			default:
-				initBonhomme(rx, ry, i4);
-				i4++;
-		}
-		
-		rx+=40+rand()%41;
-		if(rx>950){
-			rx=50;
-			ry+=40+rand()%41;
-		}
-    }
+	}
 }
 
-void initMaison(int x, int y, int i){
-        maisons[i].id = i;
-        maisons[i].p = (point){x, y, 0};
-        maisons[i].batiment = (rect){20, 20, 20};
-        maisons[i].hauteurToit = 20;
-        maisons[i].couleurMur = (couleur){1,1,1};
-        maisons[i].couleurToit = (couleur){1,1,1};
-	posMaisons[i] = (point){(x, y, 0)};
-}
-		
-void initArbre(int x, int y, int i){
-        arbres[i].id = i;
-        arbres[i].p = (point){x, y, 0};
-        arbres[i].tronc = (cylindre){5,15};
-        arbres[i].tete = (boule){10};
-		posArbres[i] = (point){(x, y, 0)};
+//théorème de pythagore pour les surfaces
+int py(int x, int y){
+    return x*x+y*y;
 }
 
-void initBonhomme(int x, int y, int i){
-        bonhommes[i].id = i;
-        bonhommes[i].p = (point){x, y, 0};
-		bonhommes[i].corps = (rect){5, 4, 4};
-        bonhommes[i].pieds = (cylindre){2,5};
-		bonhommes[i].bras = (cylindre){2,5};
-        bonhommes[i].tete = (boule){5};
-        bonhommes[i].hitbox = (rect){12,6,6};
-		posBonhommes[i] = (point){(x, y, 0)};
+int lePlusProche(int id, int type){
+	int i, min, idMin=0;
+	int x, y, d;
+	point p, p2;
+	
+	if(type==0){
+		p = bonhommes[id].pos;
+		min=py(p.x-animaux[0].pos.x, p.y-animaux[0].pos.y);
+		for(i=1;i<NB_ANIMAUX;i++){
+			p2 = animaux[id].pos;
+			if((d=py(p.x-p2.x, p.y-p2.y))<min){
+				min = d;
+				id = i;
+			}
+		}
+	}else{
+		p = animaux[id].pos;
+		min=py(p.x-bonhommes[0].pos.x, p.y-bonhommes[0].pos.y);
+		for(i=1;i<NB_BONHOMMES;i++){
+			p2 = bonhommes[id].pos;
+			if((d=py(p.x-p2.x, p.y-p2.y))<min){
+				min = d;
+				id = i;
+			}
+		}
+	}
+	if(min>60)
+		return -1;
+	return id;
 }
 
-void initAnimal(int x, int y, int i){
-        animaux[i].id = i;
-        animaux[i].p = (point){x, y, 0};
-		animaux[i].corps = (rect){2,4,4};
-        animaux[i].pattes = (cylindre){2,1};
-        animaux[i].tete = (boule){4};
-        animaux[i].hitbox = (rect){6,10,4};
-		posAnimaux[i] = (point){(x, y, 0)};
+int estAutorise(int id, int x, int y){
+	return 1;
+}
+
+void deplacer(int id, int type){
+	int i, j;
+	
+	if(type == 0){//verif cible
+		i = bonhommes[id].pos.x+bonhommes[id].direction.x;
+		j = bonhommes[id].pos.y+bonhommes[id].direction.y;
+		if(estAutorise(id,i,j)){
+			bonhommes[id].pos.x = i;
+			bonhommes[id].pos.y = j;
+		}else{
+			bonhommes[id].isDepl = 0;
+		}
+	}else{
+		i = animaux[id].pos.x+animaux[id].direction.x;
+		j = animaux[id].pos.y+animaux[id].direction.y;
+		if(estAutorise(id,i,j)){
+			animaux[id].pos.x = i;
+			animaux[id].pos.y = j;
+		}else{
+			animaux[id].isDepl = 0;
+		}
+	}
+}
+
+void modifierDirection(int id, int type){
+	int x = rand()%1000;
+	int y = rand()%1000;
+	int dx, dy, k;
+	
+	if(type == 0){//modif direction
+		k = sqrt(py(x-bonhommes[id].pos.x,y-bonhommes[id].pos.y))/10;
+		dx = bonhommes[id].pos.x+k*(x-bonhommes[id].pos.x);
+		dy = bonhommes[id].pos.y+k*(y-bonhommes[id].pos.y);
+		bonhommes[id].direction.x = dx;
+		bonhommes[id].direction.y = dy;
+		bonhommes[id].cible.x = x;
+		bonhommes[id].cible.y = y;
+		bonhommes[id].isDepl = 1;
+	}else{
+		k = sqrt(py(x-animaux[id].pos.x,y-animaux[id].pos.y))/10;
+		dx = animaux[id].pos.x+k*(x-animaux[id].pos.x);
+		dy = animaux[id].pos.y+k*(y-animaux[id].pos.y);
+		animaux[id].direction.x = dx;
+		animaux[id].direction.y = dy;
+		animaux[id].cible.x = x;
+		animaux[id].cible.y = y;
+		animaux[id].isDepl = 1;
+	}
+}
+
+void deplacerAlea(int id, int type){
+	if(type == 0 && bonhommes[id].isDepl == 0){
+		modifierDirection(id, type);
+	}else if(animaux[id].isDepl == 0){
+		modifierDirection(id, type);
+	}
+	deplacer(id, type);
+}
+
+void fuir(int id1, int id2){
+	
+}
+
+void attraper(int id1, int id2){
+	
 }
