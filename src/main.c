@@ -18,6 +18,10 @@ int vueZ=0;
 double angleY=0;
 double angleZ=0;
 
+
+
+
+
 //permet de dessiner l'origine du repère
 void origine(){
     glBegin(GL_LINES);
@@ -34,17 +38,20 @@ void origine(){
 }
 
 void jouer(){
+	
+
     jouerBonhommes();
 	jouerAnimaux();
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(-5,5,-5,5,5,2000);
-    gluLookAt(joueur.pos.x,joueur.pos.y,joueur.pos.z,joueur.pos.x+joueur.direction.x,joueur.pos.y+joueur.direction.y,joueur.pos.z+joueur.direction.z, 1,0,0);
+    gluLookAt(joueur.pos.x, joueur.pos.y, joueur.pos.z, joueur.pos.x+joueur.direction.x, joueur.pos.y+joueur.direction.y, joueur.pos.z+joueur.direction.z, 0, 0, 1);
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     origine();
     dessiner();
+
     glutSwapBuffers();
 }
 
@@ -59,8 +66,9 @@ void GererSouris(int x, int y){
 		angleY++;
 		if(angleY>359) angleY=0;
 	}
-		joueur.direction.x=(int)(10*cos(angleZ*3.14/180));
-		joueur.direction.y=(int)(10*sin(angleZ*3.14/180));
+	
+	joueur.direction.x=(int)(10*cos(angleZ*3.14/180));
+	joueur.direction.y=(int)(10*sin(angleZ*3.14/180));
 	vueY = x;
 	if(y<vueZ){
 		angleZ--;
@@ -69,7 +77,7 @@ void GererSouris(int x, int y){
 		angleZ++;
 		if(angleZ>90) angleZ=90;
 	}
-		joueur.direction.z=(int)(10*cos(angleZ*3.14/180));
+	joueur.direction.z=(int)(10*cos(angleZ*3.14/180));
 	vueZ = y;
 }
 
@@ -88,7 +96,8 @@ void GererClavier(unsigned char touche, int x, int y){
     }else if(touche == 'q'){
         x2 = joueur.pos.x - (int)(10*cos(angleY*3.14/180)+3.14/2);;
         y2 = joueur.pos.y - (int)(10*sin(angleY*3.14/180)+3.14/2);
-    }
+    } else return;
+	
 	if(estAutorise(-1, x2, y2)){
 		joueur.pos.x = x2;
 		joueur.pos.y = y2;
@@ -107,7 +116,7 @@ int main(int argc, char **argv) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(-5,5,-5,5,20,1000);
-    gluLookAt(500,500,0, 0,0,0, 1,0,0);
+    gluLookAt(500, 500,0, 0, 0, 0, 0, 0, 1);
     
     glMatrixMode(GL_MODELVIEW);
     
