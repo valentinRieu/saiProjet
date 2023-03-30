@@ -17,8 +17,7 @@ int vueY=0;
 int vueZ=0;
 double angleY=0;
 double angleZ=0;
-
-
+clock_t chrono;
 
 
 
@@ -41,11 +40,11 @@ void jouer(){
 	
 
     jouerBonhommes();
-	jouerAnimaux();
+    jouerAnimaux();
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-5,5,-5,5,5,2000);
+    glFrustum(-5,5,-5,5,5,1500);
     gluLookAt(joueur.pos.x, joueur.pos.y, joueur.pos.z, joueur.pos.x+joueur.direction.x, joueur.pos.y+joueur.direction.y, joueur.pos.z+joueur.direction.z, 0, 0, 1);
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -56,55 +55,66 @@ void jouer(){
 }
 
 void GererSouris(int x, int y){
-    printf("%d %d\n",x,y);
-    x-=TAILLE_ECRAN/2;
-    y-=TAILLE_ECRAN/2;
-	if(x<vueY){
-		angleY--;
-		if(angleY<0) angleY=359;
-	}else if(x>vueY){
-		angleY++;
-		if(angleY>359) angleY=0;
-	}
-	
-	joueur.direction.x=(int)(10*cos(angleZ*3.14/180));
-	joueur.direction.y=(int)(10*sin(angleZ*3.14/180));
-	vueY = x;
-	if(y<vueZ){
-		angleZ--;
-		if(angleZ<-90) angleZ=-90;
-	}else if(y>vueZ){
-		angleZ++;
-		if(angleZ>90) angleZ=90;
-	}
-	joueur.direction.z=(int)(10*cos(angleZ*3.14/180));
-	vueZ = y;
+    
+    if(x==500 && y==500){
+        return;
+    }
+    if(x<TAILLE_ECRAN/2-10){
+        angleY++;
+        if(angleY>359) angleY=0;
+    }else if(x>TAILLE_ECRAN/2+10){
+        angleY--;
+        if(angleY<0) angleY=359;
+    }
+    
+    joueur.direction.x=(int)(10*cos(angleY*3.14/180));
+    joueur.direction.y=(int)(10*sin(angleY*3.14/180));
+    //vueY = x;
+    if(y<TAILLE_ECRAN/2-10){
+        angleZ++;
+        if(angleZ>44) angleZ=44;
+    }else if(y>TAILLE_ECRAN/2+10){
+        angleZ--;
+        if(angleZ<-44) angleZ=-44;
+    }
+    
+    joueur.direction.z=(int)(10*sin(angleZ*3.14/180));
+    
+    if((clock() - chrono)>100){
+        glutWarpPointer(500,500);
+        chrono = clock();
+    }    
 }
 
 void GererClavier(unsigned char touche, int x, int y){
-	int x2, y2;
-    printf("%c %d %d\n",touche,x,y);
+    int x2, y2;
+    
     if(touche == 'z'){
         x2 = joueur.pos.x + joueur.direction.x;
         y2 = joueur.pos.y + joueur.direction.y;
     }else if(touche == 'd'){
-        x2 = joueur.pos.x + (int)(10*cos(angleY*3.14/180)-3.14/2);
-        y2 = joueur.pos.y + (int)(10*sin(angleY*3.14/180)-3.14/2);
+        x2 = joueur.pos.x - joueur.direction.y;
+        y2 = joueur.pos.y - joueur.direction.x;
     }else if(touche == 's'){
-        x2 = joueur.pos.x-=joueur.direction.x;
-        y2 = joueur.pos.y-=joueur.direction.y;
+        x2 = joueur.pos.x - joueur.direction.x;
+        y2 = joueur.pos.y - joueur.direction.y;
     }else if(touche == 'q'){
-        x2 = joueur.pos.x - (int)(10*cos(angleY*3.14/180)+3.14/2);;
-        y2 = joueur.pos.y - (int)(10*sin(angleY*3.14/180)+3.14/2);
-    } else return;
+        x2 = joueur.pos.x + joueur.direction.y;
+        y2 = joueur.pos.y + joueur.direction.x;
+    }else if(touche == '&'){
+        exit(0);
+    }else return;
 	
-	if(estAutorise(-1, x2, y2)){
-		joueur.pos.x = x2;
-		joueur.pos.y = y2;
-	}
+    if(estAutorise(-1, x2, y2)){
+        joueur.pos.x = x2;
+        joueur.pos.y = y2;
+    }
 }
 
-int main(int argc, char **argv) {	
+int main(int argc, char **argv) {
+
+    chrono=clock();
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(TAILLE_ECRAN, TAILLE_ECRAN);
@@ -115,15 +125,15 @@ int main(int argc, char **argv) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-5,5,-5,5,20,1000);
+    glFrustum(-5,5,-5,5,20,1500);
     gluLookAt(500, 500,0, 0, 0, 0, 0, 0, 1);
     
     glMatrixMode(GL_MODELVIEW);
-    
+    //glutSetCursor(GLUT_CURSOR_NONE);
     init();
     joueur.pos=(point){500,500,5};
     joueur.direction=(point){10,0,5};
-	joueur.hitBox = (rect){10,10};
+    joueur.hitBox = (rect){10,10};
     
     glutIdleFunc(jouer);
     glutPassiveMotionFunc(GererSouris);
