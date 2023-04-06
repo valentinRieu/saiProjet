@@ -1,3 +1,4 @@
+#include <math.h>
 #include "dessin.h"
 
 void dessinerCarreX(int x, int y1, int y2, int z1, int z2){
@@ -95,12 +96,46 @@ void dessinerArbres(){
     }
 }
 
+//à partir du point p, on trace un vecteur v vers l'endroit où l'on veut créer un point. v est déterminé en fonction du vecteur directeur d de l'objet, de dx et dy qui correspondent à l'agrandissement en x et en y et z est la position en z
+point calculRotation(point p, point d, int angle, float dx, float dy, int z){
+    point v;
+    v.x = p.x+dx*(d.x*cos(angle*3.14/180)-d.y*sin(angle*3.14/180));
+    v.y = p.y+dy*(d.y*cos(angle*3.14/180)-d.x*sin(angle*3.14/180));
+    v.z = z;
+    return v;
+}
+
 void dessinerBonhommes(){
     int i;
-    point p;
+    point p, d;
+    glColor3f(1, 0, 0);
     for(i=0;i<NB_BONHOMMES;i++){
-        p = bonhommes[i].pos;
-		
+        p = bonhommes[i].pos;//position
+        d = bonhommes[i].direction;//vecteur
+	dessinerCarre(calculRotation(p, d, 60, 0.5, 0.5, 2),//bas
+                      calculRotation(p, d, 120, 0.5, 0.5, 2),
+                      calculRotation(p, d, 240, 0.5, 0.5, 2),
+                      calculRotation(p, d, 300, 0.5, 0.5, 2));
+        dessinerCarre(calculRotation(p, d, 60, 0.5, 0.5, 8),//haut
+                      calculRotation(p, d, 120, 0.5, 0.5, 8),
+                      calculRotation(p, d, 240, 0.5, 0.5, 8),
+                      calculRotation(p, d, 300, 0.5, 0.5, 8));
+	dessinerCarre(calculRotation(p, d, 60, 0.5, 0.5, 2),//gauche
+                      calculRotation(p, d, 120, 0.5, 0.5, 2),
+                      calculRotation(p, d, 120, 0.5, 0.5, 8),
+                      calculRotation(p, d, 60, 0.5, 0.5, 8));
+	dessinerCarre(calculRotation(p, d, 240, 0.5, 0.5, 2),//droite
+                      calculRotation(p, d, 300, 0.5, 0.5, 2),
+                      calculRotation(p, d, 300, 0.5, 0.5, 8),
+                      calculRotation(p, d, 240, 0.5, 0.5, 8));
+	dessinerCarre(calculRotation(p, d, 60, 0.5, 0.5, 2),//avant
+                      calculRotation(p, d, 300, 0.5, 0.5, 2),
+                      calculRotation(p, d, 300, 0.5, 0.5, 8),
+                      calculRotation(p, d, 60, 0.5, 0.5, 8));
+	dessinerCarre(calculRotation(p, d, 240, 0.5, 0.5, 2),//arriere
+                      calculRotation(p, d, 120, 0.5, 0.5, 2),
+                      calculRotation(p, d, 120, 0.5, 0.5, 8),
+                      calculRotation(p, d, 240, 0.5, 0.5, 8));
     }
 }
 
@@ -109,6 +144,6 @@ void dessinerAnimaux(){
     point p;
     for(i=0;i<NB_ANIMAUX;i++){
         p = animaux[i].pos;
-		
+        
     }
 }

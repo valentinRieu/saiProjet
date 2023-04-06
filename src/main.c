@@ -39,8 +39,8 @@ void origine(){
 void jouer(){
 	
 
-    jouerBonhommes();
-    jouerAnimaux();
+    //jouerBonhommes();
+    //jouerAnimaux();
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

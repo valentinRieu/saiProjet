@@ -4,7 +4,7 @@ void init(){
     int i, j, i1=0,i2=0,i3=0,i4=0;
     int rx=50, ry=50;
 	
-    carte = (rect){HAUTEUR_CARTE, LARGEUR_CARTE, LONGUEUR_CARTE};
+    carte = (rect){LARGEUR_CARTE, LONGUEUR_CARTE};
 	
     for(i=0;i<NB_MAISONS+NB_ARBRES+NB_ANIMAUX+NB_BONHOMMES;i++){
         j=rand()%4;
