@@ -9,6 +9,7 @@ extern arbre arbres[NB_ARBRES];
 extern animal animaux[NB_ANIMAUX];
 extern bonhomme bonhommes[NB_BONHOMMES];
 extern rect carte;
+extern bonhomme joueur;
 
 void jouerBonhommes();
 

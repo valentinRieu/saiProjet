@@ -23,6 +23,7 @@ typedef struct s_arbre {
 } arbre;
 
 typedef struct s_animal {
+	int enVie;
 	int isDepl;
 	point pos;
 	point direction;
@@ -32,6 +33,7 @@ typedef struct s_animal {
 
 
 typedef struct s_bonhomme {
+	int enVie;
 	int isDepl;
 	point pos;
 	point direction;

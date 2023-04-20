@@ -36,11 +36,26 @@ void origine(){
     glEnd();
 }
 
+void gagne(){
+	printf("GAGNE\n");
+	exit(0);
+}
+
+void perdu(){
+	printf("PERDU\n");
+	exit(0);
+}
+
 void jouer(){
 	
 
-    //jouerBonhommes();
-    //jouerAnimaux();
+    jouerBonhommes();
+    jouerAnimaux();
+	if(dernier())
+		gagne();
+	if(!joueur.enVie)
+		perdu();
+	
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -48,7 +63,7 @@ void jouer(){
     gluLookAt(joueur.pos.x, joueur.pos.y, joueur.pos.z, joueur.pos.x+joueur.direction.x, joueur.pos.y+joueur.direction.y, joueur.pos.z+joueur.direction.z, 0, 0, 1);
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    origine();
+    //origine();
     dessiner();
 
     glutSwapBuffers();
@@ -105,7 +120,7 @@ void GererClavier(unsigned char touche, int x, int y){
         exit(0);
     }else return;
 	
-    if(estAutorise(-1, x2, y2)){
+    if(estAutorise(-1, x2, y2, 0)){
         joueur.pos.x = x2;
         joueur.pos.y = y2;
     }
@@ -131,6 +146,7 @@ int main(int argc, char **argv) {
     glMatrixMode(GL_MODELVIEW);
     //glutSetCursor(GLUT_CURSOR_NONE);
     init();
+	joueur.enVie = 1;
     joueur.pos=(point){500,500,5};
     joueur.direction=(point){10,0,5};
     joueur.hitBox = (rect){10,10};

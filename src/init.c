@@ -90,6 +90,7 @@ void initArbre(int x, int y, int i){
 }
 
 void initBonhomme(int x, int y, int i){
+    bonhommes[i].enVie = 1;
     bonhommes[i].isDepl = 0;
     bonhommes[i].pos = (point){x, y, 0};
     bonhommes[i].direction = (point){10, 0, 5};
@@ -97,6 +98,7 @@ void initBonhomme(int x, int y, int i){
 }
 
 void initAnimal(int x, int y, int i){
+    animaux[i].enVie = 1;
     animaux[i].isDepl = 0;
     animaux[i].pos = (point){x, y, 0};
     animaux[i].direction = (point){10,0,5};
