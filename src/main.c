@@ -25,37 +25,39 @@ clock_t chrono;
 void origine(){
     glBegin(GL_LINES);
     glColor3f(1, 0, 0);
-    glVertex3f(0,0,0); 
-    glVertex3f(1000,0,0); 
+    glVertex3f(0,0,0);
+    glVertex3f(1000,0,0);
     glColor3f(0, 1, 0);
-    glVertex3f(0,0,0); 
-    glVertex3f(0,1000,0); 
+    glVertex3f(0,0,0);
+    glVertex3f(0,1000,0);
     glColor3f(0, 0, 1);
-    glVertex3f(0,0,0); 
-    glVertex3f(0,0,1000); 
+    glVertex3f(0,0,0);
+    glVertex3f(0,0,1000);
     glEnd();
 }
 
 void gagne(){
-	printf("GAGNE\n");
-	exit(0);
+    printf("GAGNE\n");
+    exit(0);
 }
 
 void perdu(){
-	printf("PERDU\n");
-	exit(0);
+    printf("PERDU\n");
+    exit(0);
 }
 
+int dernier() { return 0;}
+
 void jouer(){
-	
+
 
     jouerBonhommes();
     jouerAnimaux();
-	if(dernier())
-		gagne();
-	if(!joueur.enVie)
-		perdu();
-	
+    if(dernier())
+        gagne();
+    if(!joueur.enVie)
+        perdu();
+
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -70,7 +72,7 @@ void jouer(){
 }
 
 void GererSouris(int x, int y){
-    
+
     if(x==500 && y==500){
         return;
     }
@@ -81,7 +83,7 @@ void GererSouris(int x, int y){
         angleY--;
         if(angleY<0) angleY=359;
     }
-    
+
     joueur.direction.x=(int)(10*cos(angleY*3.14/180));
     joueur.direction.y=(int)(10*sin(angleY*3.14/180));
     //vueY = x;
@@ -92,18 +94,18 @@ void GererSouris(int x, int y){
         angleZ--;
         if(angleZ<-44) angleZ=-44;
     }
-    
+
     joueur.direction.z=(int)(10*sin(angleZ*3.14/180));
-    
+
     if((clock() - chrono)>100){
         glutWarpPointer(500,500);
         chrono = clock();
-    }    
+    }
 }
 
 void GererClavier(unsigned char touche, int x, int y){
     int x2, y2;
-    
+
     if(touche == 'z'){
         x2 = joueur.pos.x + joueur.direction.x;
         y2 = joueur.pos.y + joueur.direction.y;
@@ -119,7 +121,7 @@ void GererClavier(unsigned char touche, int x, int y){
     }else if(touche == '&'){
         exit(0);
     }else return;
-	
+
     if(estAutorise(-1, x2, y2, 0)){
         joueur.pos.x = x2;
         joueur.pos.y = y2;
@@ -142,20 +144,20 @@ int main(int argc, char **argv) {
     glLoadIdentity();
     glFrustum(-5,5,-5,5,20,1500);
     gluLookAt(500, 500,0, 0, 0, 0, 0, 0, 1);
-    
+
     glMatrixMode(GL_MODELVIEW);
     //glutSetCursor(GLUT_CURSOR_NONE);
     init();
-	joueur.enVie = 1;
+    joueur.enVie = 1;
     joueur.pos=(point){500,500,5};
     joueur.direction=(point){10,0,5};
     joueur.hitBox = (rect){10,10};
-    
+
     glutIdleFunc(jouer);
     glutPassiveMotionFunc(GererSouris);
     glutKeyboardFunc(GererClavier);
-    
+
     glutMainLoop();
-    
+
     return 0;
 }

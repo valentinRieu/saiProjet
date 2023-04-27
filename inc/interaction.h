@@ -19,7 +19,7 @@ int py(int x, int y);
 
 int lePlusProche(int id, int type);
 
-int estAutorise(int id, int x, int y);
+int estAutorise(int id, int x, int y, int type);
 
 void deplacer(int id, int type);
 
