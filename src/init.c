@@ -2,7 +2,7 @@
 
 void init(){
     int i, j, i1=0,i2=0,i3=0,i4=0;
-    int rx=50, ry=50;
+    int rx=20, ry=20;
 	
     carte = (rect){LARGEUR_CARTE, LONGUEUR_CARTE};
 	
@@ -71,10 +71,10 @@ void init(){
             i4++;
         }
 		
-        rx+=40+rand()%41;
-        if(rx>950){
-            rx=50;
-            ry+=40+rand()%41;
+        rx+=40;
+        if(rx>350){
+            rx=20;
+            ry+=40;
         }
     }
 }
@@ -93,7 +93,7 @@ void initBonhomme(int x, int y, int i){
     bonhommes[i].enVie = 1;
     bonhommes[i].isDepl = 0;
     bonhommes[i].pos = (point){x, y, 0};
-    bonhommes[i].direction = (point){10, 0, 5};
+    bonhommes[i].direction = (point){vitesse, 0, 5};
     bonhommes[i].hitBox = (rect){10,10};
 }
 
@@ -101,6 +101,6 @@ void initAnimal(int x, int y, int i){
     animaux[i].enVie = 1;
     animaux[i].isDepl = 0;
     animaux[i].pos = (point){x, y, 0};
-    animaux[i].direction = (point){10,0,5};
+    animaux[i].direction = (point){vitesse,0,5};
     animaux[i].hitBox = (rect){10,5};
 }

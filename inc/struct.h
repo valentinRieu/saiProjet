@@ -2,9 +2,9 @@
 #define STRUCT_H
 
 typedef struct s_point {
-	int x;
-	int y;
-	int z;
+	double x;
+	double y;
+	double z;
 } point;
 
 typedef struct s_rect {

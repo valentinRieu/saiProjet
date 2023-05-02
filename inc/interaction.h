@@ -10,16 +10,27 @@ extern animal animaux[NB_ANIMAUX];
 extern bonhomme bonhommes[NB_BONHOMMES];
 extern rect carte;
 extern bonhomme joueur;
+extern double vitesse;
+
+int estEnVie(int id, int type);
 
 void jouerBonhommes();
 
 void jouerAnimaux();
 
-int py(int x, int y);
+double py(double x, double y);
 
 int lePlusProche(int id, int type);
 
-int estAutorise(int id, int x, int y, int type);
+int intersectionMaison(int id, double x, double y, int type);
+
+int intersectionArbre(int id, double x, double y, int type);
+
+int intersectionBonhomme(int id, double x, double y, int type);
+
+int intersectionAnimal(int id, double x, double y, int type);
+
+int estAutorise(int id, double x, double y, int type);
 
 void deplacer(int id, int type);
 
@@ -30,5 +41,7 @@ void deplacerAlea(int id, int type);
 void fuir(int id1, int id2);
 
 void attraper(int id1, int id2);
+
+void tuer(int id);
 
 #endif
