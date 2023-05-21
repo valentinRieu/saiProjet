@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <string.h>
 #include "GL/gl.h"
 #include "GL/glut.h"
 #include "struct.h"

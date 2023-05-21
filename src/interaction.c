@@ -81,61 +81,199 @@ int lePlusProche(int id, int type){
     return id2;
 }
 
-int intersectionMaison(int id, double x, double y, int type){
-    int i;
-	
-    if(id == -1){
-	for(i=0;i<NB_MAISONS;i++){
-            if(1)
-                return 1;
-	}
-    }else if(type == 0){
-		
-    }else{
-		
-    }
-	
-    return 0;
+int intersectionMaison(int id, double x, double y, int type) {
+    printf("not used %d %f %f %d", id, x, y, type);
+    return 1;
 }
-
-int intersectionArbre(int id, double x, double y, int type){
-	
-    return 0;
+int intersectionArbre(int id, double x, double y, int type) {
+    printf("not used %d %f %f %d", id, x, y, type);
+    return 1;
 }
-
 int intersectionBonhomme(int id, double x, double y, int type){
-	
-    return 0;
+    printf("not used %d %f %f %d", id, x, y, type);
+    return 1;
+}
+int intersectionAnimal(int id, double x, double y, int type) {
+    printf("not used %d %f %f %d", id, x, y, type);
+    return 1;
 }
 
-int intersectionAnimal(int id, double x, double y, int type){
-	
-    return 0;
-}
+int collision(int id1, type t1, int id2, type t2) {
 
-int estAutorise(int id, double x, double y, int type){
-    int id2;
-	
-    /*if(intersectionMaison(id, x, y, type) || intersectionArbre(id, x, y, type)){
-        return 0;
+    point *pos1, *pos2;
+    rect *hb1, *hb2;
+
+    switch(t1) {
+    case JOUEUR:
+        pos1 = &joueur.pos;
+        hb1 = &joueur.hitBox;
+        break;
+    case BONHOMME:
+        pos1 = &bonhommes[id1].pos;
+        hb1 = &bonhommes[id1].hitBox;
+        break;
+    case ANIMAL:
+        pos1 = &animaux[id1].pos;
+        hb1 = &animaux[id1].hitBox;
+        break;
+    case ARBRE:
+        pos1 = &arbres[id1].pos;
+        hb1 = &arbres[id1].hitBox;
+        break;
+    case MAISON:
+        pos1 = &maisons[id1].pos;
+        hb1 = &maisons[id1].hitBox;
+        break;
     }
-    if(type == 0){//bonhomme
-        if(intersectionBonhomme(id, x, y, type)){
-            return 0;
+    switch(t2) {
+    case JOUEUR:
+        pos2 = &joueur.pos;
+        hb2 = &joueur.hitBox;
+        break;
+    case BONHOMME:
+        pos2 = &bonhommes[id2].pos;
+        hb2 = &bonhommes[id2].hitBox;
+        break;
+    case ANIMAL:
+        pos2 = &animaux[id2].pos;
+        hb2 = &animaux[id2].hitBox;
+        break;
+    case ARBRE:
+        pos2 = &arbres[id2].pos;
+        hb2 = &arbres[id2].hitBox;
+        break;
+    case MAISON:
+        pos2 = &maisons[id2].pos;
+        hb2 = &maisons[id2].hitBox;
+        break;
+    }
+
+    // test de collision. test de z inutile en l'état
+
+    return (fabs(pos1->x - pos2->x) * 2 < (hb1->longueur + hb2->longueur) &&
+            fabs(pos1->y - pos2->y) * 2 < (hb1->largeur + hb2->largeur));
+}
+
+
+// fonction non optimale : méthode divide and conquer serait optimale
+
+void printCollision(int id1, type t1, int id2, type t2) {
+
+    char typ1[16], typ2[16];
+
+    switch(t1) {
+    case JOUEUR:
+        strcpy(typ1, "joueur");
+        break;
+    case BONHOMME:
+        strcpy(typ1, "bonhomme");
+        break;
+    case ANIMAL:
+        strcpy(typ1, "animal");
+        break;
+    case ARBRE:
+        strcpy(typ1, "arbre");
+        break;
+    case MAISON:
+        strcpy(typ1, "maison");
+        break;
+    }
+
+    switch(t2) {
+    case JOUEUR:
+        strcpy(typ2, "joueur");
+        break;
+    case BONHOMME:
+        strcpy(typ2, "bonhomme");
+        break;
+    case ANIMAL:
+        strcpy(typ2, "animal");
+        break;
+    case ARBRE:
+        strcpy(typ2, "arbre");
+        break;
+    case MAISON:
+        strcpy(typ2, "maison");
+        break;
+    }
+
+
+    printf("collision entre entité de type %s d'id %d, et entité de type %s d'id %d\n\n",
+           typ1, id1, typ2, id2);
+}
+
+void verifieToutesCollisions() {
+    // Vérification des collisions entre le joueur et les autres entités
+
+    for(int i = 0; i < NB_BONHOMMES; i++) {
+        if(collision(0, JOUEUR, i, BONHOMME)) {
+            printCollision(0, JOUEUR, i, BONHOMME);
+            joueur.pos = joueur.previousPos;
         }
-        if(intersectionAnimal(id, x, y, type)){
-            tuer(id);
-            return 0;
+    }
+    for(int i = 0; i < NB_ANIMAUX; i++) {
+        if(collision(0, JOUEUR, i, ANIMAL)) {
+            printCollision(0, JOUEUR, i, ANIMAL);
+            joueur.pos = joueur.previousPos;
         }
-    }else{//animal
-        if((id2 = intersectionBonhomme(id, x, y, type))){
-            tuer(id2);
-            return 0;
+    }
+    for(int i = 0; i < NB_ARBRES; i++) {
+        if(collision(0, JOUEUR, i, ARBRE)) {
+            printCollision(0, JOUEUR, i, ARBRE);
+            joueur.pos = joueur.previousPos;
         }
-        if(intersectionAnimal(id, x, y, type)){
-            return 0;
+    }
+    for(int i = 0; i < NB_MAISONS; i++) {
+        if(collision(0, JOUEUR, i, MAISON)) {
+            printCollision(0, JOUEUR, i, MAISON);
+            joueur.pos = joueur.previousPos;
         }
-        }*/
+    }
+
+    // Vérification des collisions entre les bonhommes et les autres entités
+    for(int i = 0; i < NB_BONHOMMES; i++) {
+        for(int j = 0; j < NB_ANIMAUX; j++) {
+            if(collision(i, BONHOMME, j, ANIMAL)) {
+                printCollision(i, BONHOMME, j, ANIMAL);
+                bonhommes[i].pos = bonhommes[i].previousPos;
+            }
+        }
+        for(int j = 0; j < NB_ARBRES; j++) {
+            if(collision(i, BONHOMME, j, ARBRE)) {
+                printCollision(i, BONHOMME, j, ARBRE);
+                bonhommes[i].pos = bonhommes[i].previousPos;
+            }
+        }
+        for(int j = 0; j < NB_MAISONS; j++) {
+            if(collision(i, BONHOMME, j, MAISON)) {
+                printCollision(i, BONHOMME, j, MAISON);
+                bonhommes[i].pos = bonhommes[i].previousPos;
+            }
+        }
+    }
+
+    // Vérification des collisions entre les animaux et les autres entités
+    for(int i = 0; i < NB_ANIMAUX; i++) {
+        for(int j = 0; j < NB_ARBRES; j++) {
+            if(collision(i, ANIMAL, j, ARBRE)) {
+                printCollision(i, ANIMAL, j, ARBRE);
+                animaux[i].pos = animaux[i].previousPos;
+            }
+        }
+        for(int j = 0; j < NB_MAISONS; j++) {
+            if(collision(i, ANIMAL, j, MAISON)) {
+                printCollision(i, ANIMAL, j, MAISON);
+                animaux[i].pos = animaux[i].previousPos;
+            }
+        }
+    }
+
+
+    // Les arbres et les maisons sont statiques, donc nous n'avons pas besoin de vérifier leurs collisions avec d'autres entités
+}
+
+int estAutorise(int id, double x, double y, int type) {
+    printf("not used est Autorise  %d %f %f %d\n", id, x, y, type);
     return 1;
 }
 
@@ -146,6 +284,9 @@ void deplacer(int id, int type){
         i = bonhommes[id].pos.x+bonhommes[id].direction.x;
         j = bonhommes[id].pos.y+bonhommes[id].direction.y;
         if(estAutorise(id,i,j,0)){
+            // on sauvegarde la précédente position : utilisé si collision
+            bonhommes[id].previousPos = bonhommes[id].pos;
+
             bonhommes[id].pos.x = i;
             bonhommes[id].pos.y = j;
             if(i-bonhommes[id].cible.x < vitesse && i-bonhommes[id].cible.x > -vitesse && j-bonhommes[id].cible.y < vitesse && j-bonhommes[id].cible.y > -vitesse){
@@ -157,6 +298,7 @@ void deplacer(int id, int type){
         }
 
     }else{
+        animaux[id].previousPos = animaux[id].pos;
         i = animaux[id].pos.x+animaux[id].direction.x;
         j = animaux[id].pos.y+animaux[id].direction.y;
         if(estAutorise(id,i,j,1)){
