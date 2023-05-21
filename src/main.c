@@ -58,6 +58,8 @@ void jouer(){
 
     jouerBonhommes();
     jouerAnimaux();
+    verifieToutesCollisions();
+
     if(dernier())
         gagne();
     if(!joueur.enVie)
@@ -103,7 +105,7 @@ void GererSouris(int x, int y){
     }
 
     joueur.direction.z=vitesse*sin(angleZ*3.14/180);
-    
+
     if((clock() - chrono)>100){
         glutWarpPointer(TAILLE_ECRAN/2,TAILLE_ECRAN/2);
         chrono = clock();

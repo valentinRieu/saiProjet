@@ -30,6 +30,10 @@ int intersectionBonhomme(int id, double x, double y, int type);
 
 int intersectionAnimal(int id, double x, double y, int type);
 
+int collision(int id1, type t1, int id2, type t2);
+
+void verifieToutesCollisions();
+
 int estAutorise(int id, double x, double y, int type);
 
 void deplacer(int id, int type);
