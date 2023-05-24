@@ -7,6 +7,8 @@ extern maison maisons[NB_MAISONS];
 extern arbre arbres[NB_ARBRES];
 extern animal animaux[NB_ANIMAUX];
 extern bonhomme bonhommes[NB_BONHOMMES];
+extern bonhomme joueur;
+extern int debugMode;
 extern rect carte;
 
 void dessinerCarreX(int x, int y1, int y2, int z1, int z2);
