@@ -181,10 +181,6 @@ int main(int argc, char **argv) {
     glMatrixMode(GL_MODELVIEW);
     //glutSetCursor(GLUT_CURSOR_NONE);
     init();
-    joueur.enVie = 1;
-    joueur.pos=(point){200,200,5};
-    joueur.direction=(point){vitesse,0,5};
-    joueur.hitBox = (rect){10,10};
     direction = (point){0,vitesse,5};
 
     glutIdleFunc(jouer);
