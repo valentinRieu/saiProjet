@@ -141,6 +141,7 @@ void GererClavier(unsigned char touche, int x, int y){
     }
 
     if(action && estAutorise(-1, x2, y2, 0)){
+        joueur.previousPos = joueur.pos;
         joueur.pos.x = x2;
         joueur.pos.y = y2;
     }
