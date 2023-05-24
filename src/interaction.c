@@ -190,23 +190,24 @@ void printCollision(int id1, type t1, int id2, type t2) {
 
     char typ1[16], typ2[16];
 
-    switch(t1) {
-    case JOUEUR:
-        strcpy(typ1, "joueur");
-        break;
-    case BONHOMME:
-        strcpy(typ1, "bonhomme");
-        break;
-    case ANIMAL:
-        strcpy(typ1, "animal");
-        break;
-    case ARBRE:
-        strcpy(typ1, "arbre");
-        break;
-    case MAISON:
-        strcpy(typ1, "maison");
-        break;
-    }
+    /* switch(t1) { */
+    /* case JOUEUR: */
+    /*     strcpy(typ1, "joueur"); */
+    /*     break; */
+    /* case BONHOMME: */
+    /*     strcpy(typ1, "bonhomme"); */
+    /*     break; */
+    /* case ANIMAL: */
+    /*     strcpy(typ1, "animal"); */
+    /*     break; */
+    /* case ARBRE: */
+    /*     strcpy(typ1, "arbre"); */
+    /*     break; */
+    /* case MAISON: */
+    /*     strcpy(typ1, "maison"); */
+    /*     break; */
+    /* } */
+    if(t1 != JOUEUR) return;
 
     switch(t2) {
     case JOUEUR:
@@ -224,11 +225,15 @@ void printCollision(int id1, type t1, int id2, type t2) {
     case MAISON:
         strcpy(typ2, "maison");
         break;
+
+    default:
+        strcpy(typ2, "wtf");
+        break;
     }
 
 
-    printf("collision entre entité de type %s d'id %d, et entité de type %s d'id %d\n\n",
-           typ1, id1, typ2, id2);
+    printf("collision entre entité de type joueur d'id %d, et entité de type %s d'id %d\n\n",
+           id1, typ2, id2);
 }
 
 void verifieToutesCollisions() {

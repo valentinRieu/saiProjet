@@ -78,7 +78,7 @@ void init(){
         }
     }
 
-    initJoueur(200, 200, 5);
+    initJoueur(INITIAL_X, INITIAL_Y, INITIAL_Z);
 }
 
 void initMaison(int x, int y, int i){

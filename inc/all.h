@@ -27,4 +27,7 @@
 #define LONGUEUR_CARTE 400
 #define LARGEUR_CARTE 400
 
+#define INITIAL_X 200
+#define INITIAL_Y 200
+#define INITIAL_Z 5
 #endif

@@ -15,6 +15,7 @@ double vitesse = 1;
 
 double angle = 0;
 bonhomme joueur;
+int debugMode = 0;
 int envol = 0;
 
 //int vueY=0;
@@ -162,7 +163,13 @@ void GererClavier(unsigned char touche, int x, int y){
 }
 
 int main(int argc, char **argv) {
-
+    for(int i = 1; i < argc; ++i){
+        if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--debug") == 0){
+            debugMode = 1;
+            fprintf(stderr, "debug mode\n");
+            break;
+        }
+    }
     chrono=clock();
 
     glutInit(&argc, argv);
