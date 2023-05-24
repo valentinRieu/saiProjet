@@ -81,22 +81,22 @@ int lePlusProche(int id, int type){
     return id2;
 }
 
-int intersectionMaison(int id, double x, double y, int type) {
-    printf("not used %d %f %f %d", id, x, y, type);
-    return 1;
-}
-int intersectionArbre(int id, double x, double y, int type) {
-    printf("not used %d %f %f %d", id, x, y, type);
-    return 1;
-}
-int intersectionBonhomme(int id, double x, double y, int type){
-    printf("not used %d %f %f %d", id, x, y, type);
-    return 1;
-}
-int intersectionAnimal(int id, double x, double y, int type) {
-    printf("not used %d %f %f %d", id, x, y, type);
-    return 1;
-}
+/* int intersectionMaison(int id, double x, double y, int type) { */
+/*     printf("not used %d %f %f %d", id, x, y, type); */
+/*     return 1; */
+/* } */
+/* int intersectionArbre(int id, double x, double y, int type) { */
+/*     printf("not used %d %f %f %d", id, x, y, type); */
+/*     return 1; */
+/* } */
+/* int intersectionBonhomme(int id, double x, double y, int type){ */
+/*     printf("not used %d %f %f %d", id, x, y, type); */
+/*     return 1; */
+/* } */
+/* int intersectionAnimal(int id, double x, double y, int type) { */
+/*     printf("not used %d %f %f %d", id, x, y, type); */
+/*     return 1; */
+/* } */
 
 int collision(int id1, type t1, int id2, type t2) {
 
@@ -150,8 +150,37 @@ int collision(int id1, type t1, int id2, type t2) {
 
     // test de collision. test de z inutile en l'état
 
-    return (fabs(pos1->x - pos2->x) * 2 < (hb1->longueur + hb2->longueur) &&
-            fabs(pos1->y - pos2->y) * 2 < (hb1->largeur + hb2->largeur));
+    rect hbdiv1 = (rect){(hb1->longueur / 2), (hb1->largeur / 2)};
+    rect hbdiv2 = (rect){(hb2->longueur / 2), (hb2->largeur / 2)};
+
+
+    point mint1 = (point){
+        pos1->x - hbdiv1.longueur,
+        pos1->y - hbdiv1.largeur,
+        pos1->z};
+
+    point maxt1 = (point){
+        pos1->x + hbdiv1.longueur,
+        pos1->y + hbdiv1.largeur,
+        pos1->z};
+
+
+    point mint2 = (point){
+        pos2->x - hbdiv2.longueur,
+        pos2->y - hbdiv2.largeur,
+        pos2->z};
+
+    point maxt2 = (point){
+        pos2->x + hbdiv2.longueur,
+        pos2->y + hbdiv2.largeur,
+        pos2->z};
+
+    return (mint1.x <= maxt2.x &&
+            maxt1.x >= mint2.x &&
+            mint1.y <= maxt2.y &&
+            maxt1.y >= mint2.y);
+    /* return (fabs(pos1->x - pos2->x) * 2 < (hb1->longueur + hb2->longueur) && */
+    /*         fabs(pos1->y - pos2->y) * 2 < (hb1->largeur + hb2->largeur)); */
 }
 
 
@@ -273,7 +302,6 @@ void verifieToutesCollisions() {
 }
 
 int estAutorise(int id, double x, double y, int type) {
-    printf("not used est Autorise  %d %f %f %d\n", id, x, y, type);
     return 1;
 }
 
