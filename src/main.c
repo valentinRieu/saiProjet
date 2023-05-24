@@ -15,6 +15,7 @@ double vitesse = 1;
 
 double angle = 0;
 bonhomme joueur;
+int envol = 0;
 
 //int vueY=0;
 //int vueZ=0;
@@ -68,7 +69,7 @@ void jouer(){
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-5,5,-5,5,5,650);
+    glFrustum(-5,5,-5,5,5,600);
     gluLookAt(joueur.pos.x, joueur.pos.y, joueur.pos.z, joueur.pos.x+joueur.direction.x, joueur.pos.y+joueur.direction.y, joueur.pos.z+joueur.direction.z, 0, 0, 1);
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -98,10 +99,10 @@ void GererSouris(int x, int y){
     //vueY = x;
     if(y<TAILLE_ECRAN/2-10){
         angleZ++;
-        if(angleZ>44) angleZ=44;
+        if(angleZ>80) angleZ=80;
     }else if(y>TAILLE_ECRAN/2+10){
         angleZ--;
-        if(angleZ<-44) angleZ=-44;
+        if(angleZ<-80) angleZ=-80;
     }
 
     joueur.direction.z=vitesse*sin(angleZ*3.14/180);
@@ -136,6 +137,19 @@ void GererClavier(unsigned char touche, int x, int y){
         y2 = joueur.pos.y + direction.y;
         action = 1;
     }
+    if(touche == 'r'){
+        envol = ++envol%2;
+        if(!envol)
+            joueur.pos.z = 5;
+    }
+    if(envol){
+        if(touche == 'w' && joueur.pos.z<HAUTEUR_CARTE-10){
+            joueur.pos.z += 1;
+        }
+        if(touche == 'x' && joueur.pos.z>5){
+            joueur.pos.z -= 1;
+        }
+    }
     if(touche == '&'){
         exit(0);
     }
@@ -161,7 +175,7 @@ int main(int argc, char **argv) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-5,5,-5,5,20,650);
+    glFrustum(-5,5,-5,5,20,600);
     gluLookAt(500, 500,0, 0, 0, 0, 0, 0, 1);
 
     glMatrixMode(GL_MODELVIEW);
