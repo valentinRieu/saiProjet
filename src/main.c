@@ -92,9 +92,9 @@ void drawHealthBar(){
             0};
         if(i < joueur.enVie){
             drawCarre2d(bl, tr);
-            continue;
+        } else {
+            drawCadre2d(bl, tr);
         }
-        drawCadre2d(bl, tr);
     }
 }
 

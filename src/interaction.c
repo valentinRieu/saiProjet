@@ -377,20 +377,20 @@ int estAutorise(int id, double x, double y, int type) {
     }
     else if(type == 0){
         if(estEnVie(-1, 0) && collision(id, x, y, BONHOMME, 0, JOUEUR)){
-            printCollision(0, BONHOMME, 0, JOUEUR);
+            printCollision(id, BONHOMME, 0, JOUEUR);
             return 0;
         }
 
         for(i = 0; i < NB_BONHOMMES; i++) {
             if(i != id && estEnVie(i, 0) && collision(id, x, y, BONHOMME, i, BONHOMME)) {
-                printCollision(0, BONHOMME, i, BONHOMME);
+                printCollision(id, BONHOMME, i, BONHOMME);
                 return 0;
             }
         }
 
         for(i = 0; i < NB_ANIMAUX; i++) {
             if(estEnVie(i, 1) && collision(id, x, y, BONHOMME, i, ANIMAL)) {
-                printCollision(0, BONHOMME, i, ANIMAL);
+                printCollision(id, BONHOMME, i, ANIMAL);
                 bonhommes[i].enVie = 0;
                 return 0;
             }
@@ -398,22 +398,45 @@ int estAutorise(int id, double x, double y, int type) {
 
         for(i = 0; i < NB_ARBRES; i++) {
             if(collision(id, x, y, BONHOMME, i, ARBRE)) {
-                printCollision(0, BONHOMME, i, ARBRE);
+                printCollision(id, BONHOMME, i, ARBRE);
                 return 0;
             }
         }
 
         for(i = 0; i < NB_MAISONS; i++) {
             if(collision(id, x, y, BONHOMME, i, MAISON)) {
-                printCollision(0, BONHOMME, i, MAISON);
+                printCollision(id, BONHOMME, i, MAISON);
+                return 0;
+            }
+        }
+
+    } else {
+
+        for(i = 0; i < NB_ANIMAUX; i++) {
+            if(estEnVie(i, 1) && collision(id, x, y, ANIMAL, i, ANIMAL)) {
+                printCollision(id, ANIMAL, i, ANIMAL);
+                return 0;
+            }
+        }
+
+        for(i = 0; i < NB_ARBRES; i++) {
+            if(collision(id, x, y, BONHOMME, i, ARBRE)) {
+                printCollision(id, ANIMAL, i, ARBRE);
+                return 0;
+            }
+        }
+
+        for(i = 0; i < NB_MAISONS; i++) {
+            if(collision(id, x, y, BONHOMME, i, MAISON)) {
+                printCollision(id, ANIMAL, i, MAISON);
                 return 0;
             }
         }
 
     }
+
     return 1;
 }
-
 //Permet de déplacer un élément d'id id et de type type
 void deplacer(int id, int type){
     double i, j;
