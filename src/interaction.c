@@ -55,7 +55,7 @@ void jouerJoueur() {
     if(!action){
         return;
     }
-    
+
     joueur.previousPos = joueur.pos;
     if(avantInput){
         x2 += joueur.direction.x;
@@ -126,7 +126,7 @@ int lePlusProche(int id, int type){
                 id2 = i;
             }
         }
-        
+
     }
     if(min>1000)
         return -2;
@@ -440,29 +440,26 @@ void verifieToutesCollisions() {
 
     // test de collision. test de z inutile en l'état
 
-    rect hbdiv1 = (rect){(hb1->longueur / 2), (hb1->largeur / 2)};
-    rect hbdiv2 = (rect){(hb2->longueur / 2), (hb2->largeur / 2)};
-
 
     point mint1 = (point){
-        pos1.x - hbdiv1.longueur,
-        pos1.y - hbdiv1.largeur,
+        pos1.x,
+        pos1.y,
         pos1.z};
 
     point maxt1 = (point){
-        pos1.x + hbdiv1.longueur,
-        pos1.y + hbdiv1.largeur,
+        pos1.x + hb1->longueur,
+        pos1.y + hb1->largeur,
         pos1.z};
 
 
     point mint2 = (point){
-        pos2->x - hbdiv2.longueur,
-        pos2->y - hbdiv2.largeur,
+        pos2->x,
+        pos2->y,
         pos2->z};
 
     point maxt2 = (point){
-        pos2->x + hbdiv2.longueur,
-        pos2->y + hbdiv2.largeur,
+        pos2->x + hb2->longueur,
+        pos2->y + hb2->largeur,
         pos2->z};
 
     return (mint1.x <= maxt2.x &&
@@ -478,7 +475,7 @@ int estAutorise(int id, double x, double y, int type) {
 
     if(x<=5 || x>=LARGEUR_CARTE-5 || y<=5 || y>=LONGUEUR_CARTE-5)
         return 0;
-    
+
     if(id == -1){
         for(i = 0; i < NB_BONHOMMES; i++) {
             if(estEnVie(i, 0) && collision2(id, x, y, JOUEUR, i, BONHOMME)) {

@@ -65,6 +65,20 @@ int dernier() {
     return 1;
 }
 
+void draw2D() {
+    glColor3f(1.0f, 1.0f, 1.0f); // Set the color of the cross to white.
+    glBegin(GL_LINES);
+    glVertex2f(TAILLE_ECRAN / 2.0f, (TAILLE_ECRAN / 2.0f) - 15); // Start at the middle of the screen on the bottom.
+    glVertex2f(TAILLE_ECRAN / 2.0f, (TAILLE_ECRAN / 2.0f) + 15); // Draw to the middle of the screen at the top.
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex2f((TAILLE_ECRAN / 2.0f) - 15, TAILLE_ECRAN / 2.0f); // Start at the middle of the screen on the left.
+    glVertex2f((TAILLE_ECRAN / 2.0F) + 15, TAILLE_ECRAN / 2.0f); // Draw to the middle of the screen on the right.
+    glEnd();
+}
+
+
 void jouer(){
 
 
@@ -85,17 +99,38 @@ void jouer(){
     glFrustum(-5,5,-5,5,5,600);
     gluLookAt(joueur.pos.x, joueur.pos.y, joueur.pos.z, joueur.pos.x+joueur.direction.x, joueur.pos.y+joueur.direction.y, joueur.pos.z+joueur.direction.z, 0, 0, 1);
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //origine();
+    glPushMatrix();
     dessiner();
 
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix(); // Save the 3D projection matrix
+    glLoadIdentity();
+    gluOrtho2D(0, TAILLE_ECRAN, 0, TAILLE_ECRAN); // Set up a 2D orthographic projection matrix
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // Disable depth testing and lighting for 2D rendering
+    glDisable(GL_DEPTH_TEST);
+
+    // Draw your 2D content here.
+    draw2D(); // This is where you'd call your 2D drawing function.
+
+    glEnable(GL_DEPTH_TEST);
+
+    // Restore the original 3D projection matrix
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
     glutSwapBuffers();
     glutPostRedisplay();
 }
 
 void GererSouris(int x, int y){
 
-    if(x==500 && y==500){
+    if(x==TAILLE_ECRAN/2 && y==TAILLE_ECRAN/2){
         return;
     }
     if(x<TAILLE_ECRAN/2-10){
@@ -159,6 +194,7 @@ void GererClavier(unsigned char touche, int x, int y){
         if(!envol)
             joueur.pos.z = 5;
     }
+
     if(envol){
         if(touche == 'w' && joueur.pos.z<HAUTEUR_CARTE-10){
             hautInput = 1;
@@ -232,7 +268,7 @@ int main(int argc, char **argv) {
     gluLookAt(INITIAL_X, INITIAL_Y,INITIAL_Z, INITIAL_X/2, 0, 5, 0, 0, 1);
 
     glMatrixMode(GL_MODELVIEW);
-    //glutSetCursor(GLUT_CURSOR_NONE);
+    glutSetCursor(GLUT_CURSOR_NONE);
     init();
     direction = (point){0,vitesse,5};
 
