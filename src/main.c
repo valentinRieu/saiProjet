@@ -17,7 +17,7 @@ double angle = 0;
 bonhomme joueur;
 int debugMode = 0;
 int envol = 0;
-
+int vitesseJeu = 1;
 int action = 0;
 int gaucheInput = 0, droiteInput = 0, avantInput = 0, arriereInput = 0, hautInput = 0, basInput = 0;
 
@@ -134,10 +134,10 @@ void GererSouris(int x, int y){
         return;
     }
     if(x<TAILLE_ECRAN/2-10){
-        angleY++;
+        angleY+=1.5;
         if(angleY>359) angleY=0;
     }else if(x>TAILLE_ECRAN/2+10){
-        angleY--;
+        angleY-=1.5;
         if(angleY<0) angleY=359;
     }
 
@@ -147,10 +147,10 @@ void GererSouris(int x, int y){
     direction.y = 2*vitesse*sin(angleY*3.14/180+3.14/2);
     //vueY = x;
     if(y<TAILLE_ECRAN/2-10){
-        angleZ++;
+        angleZ+=1.5;
         if(angleZ>90) angleZ=90;
     }else if(y>TAILLE_ECRAN/2+10){
-        angleZ--;
+        angleZ-=1.5;
         if(angleZ<-90) angleZ=-90;
     }
 
@@ -243,15 +243,65 @@ void GererReleaseClavier(unsigned char touche, int x, int y){
 
 }
 
+void usage(char *s) {
+    printf("%s\n", s);
+    printf("=========================================\n");
+    printf("==============\tUSAGE\t=================\n");
+    printf("\t<%s> \t<options>\n\n", s);
+    printf("\t\t<options> : \n\t\t<-d OU --debug> \n\tAffiche les messages d'informations\n\n\t\t<-s OU --speed SUIVI DE <i>> \n\tIncrémente ou décrémente la vitesse du jeu. DEFAULT : 2. i COMPRIS ENTRE 1 ET 6\n\n \t\t<-h || --help>\n\tAffiche cette aide\n");
+    printf("=========================================\n");
+
+}
+
 int main(int argc, char **argv) {
-    printf("%d, %d, %d, %d\n", gaucheInput, droiteInput, avantInput, arriereInput);
+    int paramSpeed;
     for(int i = 1; i < argc; ++i){
+        /*
+          -d --debug
+          -s --speed default 2
+          -h --help
+         */
         if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--debug") == 0){
             debugMode = 1;
             fprintf(stderr, "debug mode\n");
             break;
         }
+        if((strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--speed") == 0) && i+1 < argc){
+            paramSpeed = atoi(argv[i+1]);
+            switch(paramSpeed) {
+            case 1:
+                vitesse = 0.5;
+                break;
+
+            case 2:
+                vitesse = 1;
+                break;
+            case 3:
+                vitesse = 1.5;
+                break;
+            case 4:
+                vitesse = 2;
+                break;
+            case 5:
+                vitesse = 2.5;
+                break;
+            case 6:
+                vitesse = 3;
+                break;
+
+            default:
+                usage(argv[0]);
+                exit(0);
+            }
+            break;
+        }
+
+        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+            usage(argv[0]);
+            exit(0);
+        }
     }
+
     chrono=clock();
 
     glutInit(&argc, argv);
