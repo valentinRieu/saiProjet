@@ -664,6 +664,7 @@ void fuir(int id1, int id2){
     if(estAutorise(id1, x, y, 0)){
         bonhommes[id1].pos.x = x;
         bonhommes[id1].pos.y = y;
+        bonhommes[id1].isDepl = 0;
     }
 }
 
@@ -679,12 +680,15 @@ void attraper(int id1, int id2){
         dy = animaux[id1].pos.y-bonhommes[id2].pos.y;
     }
     d = sqrt(py(dx, dy));
+    dx = -dx;
+    dy = -dy;
     x = animaux[id1].pos.x+vitesse*dx/d;
     y = animaux[id1].pos.y+vitesse*dy/d;
     //il faut vérifier ici si l'animal a attrapé le bonhomme
     if(estAutorise(id1, x, y, 1)){
         animaux[id1].pos.x = x;
         animaux[id1].pos.y = y;
+        animaux[id1].isDepl = 0;
     }
 }
 

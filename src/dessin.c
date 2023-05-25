@@ -160,11 +160,11 @@ void dessinerBonhommes(){
           calculRotation(p, d, 120, 0.5, 0.5, 8),
           calculRotation(p, d, 240, 0.5, 0.5, 8));*/
         glColor3f(1, 1, 0);//tronc jaune
-        dessinerCarreX(p.x,p.y,p.y+5,4,8);
-        dessinerCarreX(p.x+5,p.y,p.y+5,4,8);
-        dessinerCarreY(p.x,p.x+5,p.y,4,8);
-        dessinerCarreY(p.x,p.x+5,p.y+5,4,8);
-        dessinerCarreZ(p.x,p.x+5,p.y,p.y+5,4);
+        dessinerCarreX(p.x,p.y,p.y+5,0,8);
+        dessinerCarreX(p.x+5,p.y,p.y+5,0,8);
+        dessinerCarreY(p.x,p.x+5,p.y,0,8);
+        dessinerCarreY(p.x,p.x+5,p.y+5,0,8);
+        dessinerCarreZ(p.x,p.x+5,p.y,p.y+5,0);
         dessinerCarreZ(p.x,p.x+5,p.y,p.y+5,8);
     }
 }
@@ -175,12 +175,12 @@ void dessinerAnimaux(){
     for(i=0;i<NB_ANIMAUX;i++){
         p = animaux[i].pos;
         glColor3f(0, 1, 1);//tronc cyan
-        dessinerCarreX(p.x,p.y,p.y+5,2,6);
-        dessinerCarreX(p.x+5,p.y,p.y+5,2,6);
-        dessinerCarreY(p.x,p.x+5,p.y,2,6);
-        dessinerCarreY(p.x,p.x+5,p.y+5,2,6);
-        dessinerCarreZ(p.x,p.x+5,p.y,p.y+5,2);
-        dessinerCarreZ(p.x,p.x+5,p.y,p.y+5,6);
+        dessinerCarreX(p.x,p.y,p.y+5,0,4);
+        dessinerCarreX(p.x+5,p.y,p.y+5,0,4);
+        dessinerCarreY(p.x,p.x+5,p.y,0,4);
+        dessinerCarreY(p.x,p.x+5,p.y+5,0,4);
+        dessinerCarreZ(p.x,p.x+5,p.y,p.y+5,0);
+        dessinerCarreZ(p.x,p.x+5,p.y,p.y+5,4);
     }
 }
 
