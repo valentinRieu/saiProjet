@@ -88,7 +88,7 @@ void initMaison(int x, int y, int i){
 
 void initArbre(int x, int y, int i){
     arbres[i].pos = (point){x, y, 0};
-    arbres[i].hitBox = (rect){20, 20};
+    arbres[i].hitBox = (rect){16, 16};
 }
 
 void initBonhomme(int x, int y, int i){
@@ -97,7 +97,7 @@ void initBonhomme(int x, int y, int i){
     bonhommes[i].pos = (point){x, y, 0};
     bonhommes[i].previousPos = bonhommes[i].pos;
     bonhommes[i].direction = (point){vitesse, 0, 5};
-    bonhommes[i].hitBox = (rect){10,10};
+    bonhommes[i].hitBox = (rect){5,5};
 }
 
 void initAnimal(int x, int y, int i){
@@ -106,7 +106,7 @@ void initAnimal(int x, int y, int i){
     animaux[i].pos = (point){x, y, 0};
     animaux[i].previousPos = animaux[i].pos;
     animaux[i].direction = (point){vitesse,0,5};
-    animaux[i].hitBox = (rect){10,5};
+    animaux[i].hitBox = (rect){5,5};
 }
 
 void initJoueur(int x, int y, int z) {
@@ -114,5 +114,5 @@ void initJoueur(int x, int y, int z) {
     joueur.pos=(point){x, y, z};
     joueur.previousPos = joueur.pos;
     joueur.direction=(point){vitesse,0,5};
-    joueur.hitBox = (rect){10,10};
+    joueur.hitBox = (rect){5,5};
 }
