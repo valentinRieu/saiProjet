@@ -1,13 +1,13 @@
 #include "init.h"
 
 void init(){
-    int i, j, i1=0,i2=0,i3=0,i4=0;
-    int rx=20, ry=20;
+    int i, j, i1=0,i2=0,i3=0,i4=0,i5=0;
+    int rx=25, ry=25;
     srand(time(NULL));
     carte = (rect){LARGEUR_CARTE, LONGUEUR_CARTE};
 
-    for(i=0;i<NB_MAISONS+NB_ARBRES+NB_ANIMAUX+NB_BONHOMMES;i++){
-        j=rand()%4;
+    for(i=0;i<=NB_MAISONS+NB_ARBRES+NB_ANIMAUX+NB_BONHOMMES;i++){
+        j=rand()%5;
         switch(j){
         case 0:
             if(i1>=NB_MAISONS){
@@ -15,8 +15,10 @@ void init(){
                     j=1;
                 }else if(i3<NB_ANIMAUX){
                     j=2;
-                }else{
+                }else if(i4<NB_BONHOMMES){
                     j=3;
+                }else{
+                    j=4;
                 }
             }
             break;
@@ -26,8 +28,10 @@ void init(){
                     j=0;
                 }else if(i3<NB_ANIMAUX){
                     j=2;
-                }else{
+                }else if(i4<NB_BONHOMMES){
                     j=3;
+                }else{
+                    j=4;
                 }
             }
             break;
@@ -37,19 +41,36 @@ void init(){
                     j=0;
                 }else if(i2<NB_ARBRES){
                     j=1;
-                }else{
+                }else if(i4<NB_BONHOMMES){
                     j=3;
+                }else{
+                    j=4;
                 }
             }
             break;
-        default:
+        case 3:
             if(i4>=NB_BONHOMMES){
                 if(i1<NB_MAISONS){
                     j=0;
                 }else if(i2<NB_ARBRES){
                     j=1;
-                }else{
+                }else if(i3<NB_ANIMAUX){
                     j=2;
+                }else{
+                    j=4;
+                }
+            }
+            break;
+        default:
+            if(i5 == 1){
+                if(i1<NB_MAISONS){
+                    j=0;
+                }else if(i2<NB_ARBRES){
+                    j=1;
+                }else if(i3<NB_ANIMAUX){
+                    j=2;
+                }else{
+                    j=3;
                 }
             }
         }
@@ -66,19 +87,20 @@ void init(){
             initAnimal(rx, ry, i3);
             i3++;
             break;
-        default:
+        case 3:
             initBonhomme(rx, ry, i4);
             i4++;
+            break;
+        default:
+            initJoueur(rx, ry, INITIAL_Z);
         }
 
-        rx+=40;
+        rx+=50;
         if(rx>350){
-            rx=20;
-            ry+=40;
+            rx=25;
+            ry+=50;
         }
     }
-
-    initJoueur(INITIAL_X, INITIAL_Y, INITIAL_Z);
 }
 
 void initMaison(int x, int y, int i){
