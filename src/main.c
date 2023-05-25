@@ -56,7 +56,14 @@ void perdu(){
     exit(0);
 }
 
-int dernier() { return 0;}
+int dernier() {
+    int i;
+    for(i=0;i<NB_BONHOMMES;i++){
+        if(estEnVie(i, 0))
+            return 0;
+    }
+    return 1;
+}
 
 void jouer(){
 
@@ -65,7 +72,7 @@ void jouer(){
     jouerAnimaux();
     jouerJoueur();
 
-    verifieToutesCollisions();
+    //verifieToutesCollisions();
 
     if(dernier())
         gagne();
@@ -99,31 +106,34 @@ void GererSouris(int x, int y){
         if(angleY<0) angleY=359;
     }
 
-    joueur.direction.x=vitesse*cos(angleY*3.14/180);
-    joueur.direction.y=vitesse*sin(angleY*3.14/180);
-    direction.x = vitesse*cos(angleY*3.14/180+3.14/2);
-    direction.y = vitesse*sin(angleY*3.14/180+3.14/2);
+    joueur.direction.x=2*vitesse*cos(angleY*3.14/180);
+    joueur.direction.y=2*vitesse*sin(angleY*3.14/180);
+    direction.x = 2*vitesse*cos(angleY*3.14/180+3.14/2);
+    direction.y = 2*vitesse*sin(angleY*3.14/180+3.14/2);
     //vueY = x;
     if(y<TAILLE_ECRAN/2-10){
         angleZ++;
-        if(angleZ>80) angleZ=80;
+        if(angleZ>90) angleZ=90;
     }else if(y>TAILLE_ECRAN/2+10){
         angleZ--;
-        if(angleZ<-80) angleZ=-80;
+        if(angleZ<-90) angleZ=-90;
     }
 
-    joueur.direction.z=vitesse*sin(angleZ*3.14/180);
+    joueur.direction.z=2*vitesse*sin(angleZ*3.14/180);
 
     if((clock() - chrono)>100){
         glutWarpPointer(TAILLE_ECRAN/2,TAILLE_ECRAN/2);
         chrono = clock();
     }
 }
+
 void GererClavier(unsigned char touche, int x, int y){
+    if(debugMode)
+        printf("Released : %c en %d %d\n", touche, x, y);
 
     action = 0;
 
-    double x2, y2;
+    //double x2, y2;
 
     if(touche == 'z'){
         avantInput = 1;
@@ -145,7 +155,7 @@ void GererClavier(unsigned char touche, int x, int y){
         action = 1;
     }
     if(touche == 'r'){
-        envol = ++envol%2;
+        envol = (envol+1)%2;
         if(!envol)
             joueur.pos.z = 5;
     }
@@ -167,7 +177,8 @@ void GererClavier(unsigned char touche, int x, int y){
 }
 
 void GererReleaseClavier(unsigned char touche, int x, int y){
-    printf("Released : %c\n", touche);
+    if(debugMode)
+        printf("Released : %c en %d %d\n", touche, x, y);
     if(touche == 'z'){
         avantInput = 0;
     }
@@ -218,7 +229,7 @@ int main(int argc, char **argv) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(-5,5,-5,5,20,600);
-    gluLookAt(500, 500,0, 0, 0, 0, 0, 0, 1);
+    gluLookAt(INITIAL_X, INITIAL_Y,INITIAL_Z, INITIAL_X/2, 0, 5, 0, 0, 1);
 
     glMatrixMode(GL_MODELVIEW);
     //glutSetCursor(GLUT_CURSOR_NONE);

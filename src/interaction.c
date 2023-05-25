@@ -13,14 +13,14 @@ int estEnVie(int id, int type){
 
 void jouerBonhommes(){
     int i, j;
-
+    printf("bonhommes en jaune\n");
     for(i=0;i<NB_BONHOMMES;i++){
         if(!estEnVie(i, 0))
             continue;
 
         j = lePlusProche(i, 0);//id
         //fuir j
-        if(j==-1){
+        if(j==-2){
             deplacerAlea(i, 0);
         }else{
             fuir(i, j);
@@ -30,14 +30,14 @@ void jouerBonhommes(){
 
 void jouerAnimaux(){
     int i, j;
-
+    printf("animaux en cyan\n");
     for(i=0;i<NB_ANIMAUX;i++){
         if(!estEnVie(i, 1))
             continue;
 
         j = lePlusProche(i, 1);//id
         //aller vers j
-        if(j==-1){
+        if(j==-2){
             deplacerAlea(i, 1);
         }else{
             attraper(i, j);
@@ -55,6 +55,7 @@ void jouerJoueur() {
     if(!action){
         return;
     }
+    
     joueur.previousPos = joueur.pos;
     if(avantInput){
         x2 += joueur.direction.x;
@@ -90,8 +91,8 @@ void jouerJoueur() {
             basInput = 0;
         }
     } else z2 = INITIAL_Z;
-    joueur.pos = (point){x2, y2, z2};
-
+    if(estAutorise(-1, x2, y2, 0))
+        joueur.pos = (point){x2, y2, z2};
 }
 
 //théorème de pythagore pour les surfaces
@@ -100,13 +101,14 @@ double py(double x, double y){
 }
 
 int lePlusProche(int id, int type){
-    int i, id2=0;
+    int i, id2;
     double min, d;
     point p, p2;
 
     if(type==0){
         p = bonhommes[id].pos;
         min=py(p.x-animaux[0].pos.x, p.y-animaux[0].pos.y);
+        id2 = 0;
         for(i=1;i<NB_ANIMAUX;i++){
             p2 = animaux[id].pos;
             if((d=py(p.x-p2.x, p.y-p2.y))<min){
@@ -116,7 +118,13 @@ int lePlusProche(int id, int type){
         }
     }else{
         p = animaux[id].pos;
-        min=py(p.x-joueur.pos.x, p.y-joueur.pos.y);
+        if(envol){
+            min=py(p.x-bonhommes[0].pos.x, p.y-bonhommes[0].pos.y);
+            id2 = 0;
+        }else{
+            min=py(p.x-joueur.pos.x, p.y-joueur.pos.y);
+            id2 = -1;
+        }
         for(i=0;i<NB_BONHOMMES;i++){
             p2 = bonhommes[id].pos;
             if((d=py(p.x-p2.x, p.y-p2.y))<min){
@@ -124,9 +132,10 @@ int lePlusProche(int id, int type){
                 id2 = i;
             }
         }
+        
     }
-    if(min>20)
-        return -1;
+    if(min>1000)
+        return -2;
     return id2;
 }
 
@@ -390,9 +399,181 @@ void verifieToutesCollisions() {
 
 
     // Les arbres et les maisons sont statiques, donc nous n'avons pas besoin de vérifier leurs collisions avec d'autres entités
+}int collision2(int id1, double x, double y, type t1, int id2, type t2) {
+
+    point pos1 = (point){x, y, 0}, *pos2;
+    rect *hb1, *hb2;
+
+    switch(t1) {
+    case JOUEUR:
+        hb1 = &joueur.hitBox;
+        break;
+    case BONHOMME:
+        hb1 = &bonhommes[id1].hitBox;
+        break;
+    case ANIMAL:
+        hb1 = &animaux[id1].hitBox;
+        break;
+    case ARBRE:
+        hb1 = &arbres[id1].hitBox;
+        break;
+    case MAISON:
+        hb1 = &maisons[id1].hitBox;
+        break;
+    }
+    switch(t2) {
+    case JOUEUR:
+        pos2 = &joueur.pos;
+        hb2 = &joueur.hitBox;
+        break;
+    case BONHOMME:
+        pos2 = &bonhommes[id2].pos;
+        hb2 = &bonhommes[id2].hitBox;
+        break;
+    case ANIMAL:
+        pos2 = &animaux[id2].pos;
+        hb2 = &animaux[id2].hitBox;
+        break;
+    case ARBRE:
+        pos2 = &arbres[id2].pos;
+        hb2 = &arbres[id2].hitBox;
+        break;
+    case MAISON:
+        pos2 = &maisons[id2].pos;
+        hb2 = &maisons[id2].hitBox;
+        break;
+    }
+
+    // test de collision. test de z inutile en l'état
+
+    rect hbdiv1 = (rect){(hb1->longueur / 2), (hb1->largeur / 2)};
+    rect hbdiv2 = (rect){(hb2->longueur / 2), (hb2->largeur / 2)};
+
+
+    point mint1 = (point){
+        pos1.x - hbdiv1.longueur,
+        pos1.y - hbdiv1.largeur,
+        pos1.z};
+
+    point maxt1 = (point){
+        pos1.x + hbdiv1.longueur,
+        pos1.y + hbdiv1.largeur,
+        pos1.z};
+
+
+    point mint2 = (point){
+        pos2->x - hbdiv2.longueur,
+        pos2->y - hbdiv2.largeur,
+        pos2->z};
+
+    point maxt2 = (point){
+        pos2->x + hbdiv2.longueur,
+        pos2->y + hbdiv2.largeur,
+        pos2->z};
+
+    return (mint1.x <= maxt2.x &&
+            maxt1.x >= mint2.x &&
+            mint1.y <= maxt2.y &&
+            maxt1.y >= mint2.y);
+    /* return (fabs(pos1->x - pos2->x) * 2 < (hb1->longueur + hb2->longueur) && */
+    /*         fabs(pos1->y - pos2->y) * 2 < (hb1->largeur + hb2->largeur)); */
 }
 
 int estAutorise(int id, double x, double y, int type) {
+    int i;
+
+    if(x<=5 || x>=LARGEUR_CARTE-5 || y<=5 || y>=LONGUEUR_CARTE-5)
+        return 0;
+    
+    if(id == -1){
+        for(i = 0; i < NB_BONHOMMES; i++) {
+            if(estEnVie(i, 0) && collision2(id, x, y, JOUEUR, i, BONHOMME)) {
+                printCollision(0, JOUEUR, i, BONHOMME);
+                return 0;
+            }
+        }
+        for(i = 0; i < NB_ANIMAUX; i++) {
+            if(estEnVie(i, 1) && collision2(id, x, y, JOUEUR, i, ANIMAL)) {
+                printCollision(0, JOUEUR, i, ANIMAL);
+                if(!envol)
+                    joueur.enVie = 0;
+                return 0;
+            }
+        }
+        for(i = 0; i < NB_ARBRES; i++) {
+            if(collision2(id, x, y, JOUEUR, i, ARBRE)) {
+                printCollision(0, JOUEUR, i, ARBRE);
+                return 0;
+            }
+        }
+        for(i = 0; i < NB_MAISONS; i++) {
+            if(collision2(id, x, y, JOUEUR, i, MAISON)) {
+                printCollision(0, JOUEUR, i, MAISON);
+                return 0;
+            }
+        }
+    }else if(type == 0){
+        if(estEnVie(-1, 0) && collision2(id, x, y, BONHOMME, 0, JOUEUR)){
+            printCollision(0, BONHOMME, 0, JOUEUR);
+            return 0;
+        }
+        for(i = 0; i < NB_BONHOMMES; i++) {
+            if(i != id && estEnVie(i, 0) && collision2(id, x, y, BONHOMME, i, BONHOMME)) {
+                printCollision(0, BONHOMME, i, BONHOMME);
+                return 0;
+            }
+        }
+        for(i = 0; i < NB_ANIMAUX; i++) {
+            if(estEnVie(i, 1) && collision2(id, x, y, BONHOMME, i, ANIMAL)) {
+                printCollision(0, BONHOMME, i, ANIMAL);
+                bonhommes[i].enVie = 0;
+                return 0;
+            }
+        }
+        for(i = 0; i < NB_ARBRES; i++) {
+            if(collision2(id, x, y, BONHOMME, i, ARBRE)) {
+                printCollision(0, BONHOMME, i, ARBRE);
+                return 0;
+            }
+        }
+        for(i = 0; i < NB_MAISONS; i++) {
+            if(collision2(id, x, y, BONHOMME, i, MAISON)) {
+                printCollision(0, BONHOMME, i, MAISON);
+                return 0;
+            }
+        }
+    }else{
+        if(estEnVie(-1, 0) && collision2(id, x, y, ANIMAL, 0, JOUEUR)){
+            printCollision(0, ANIMAL, 0, JOUEUR);
+            if(!envol)
+                joueur.enVie = 0;
+            return 0;
+        }
+        for(i = 0; i < NB_BONHOMMES; i++) {
+            if(estEnVie(i, 0) && collision2(id, x, y, ANIMAL, i, BONHOMME)) {
+                printCollision(0, ANIMAL, i, BONHOMME);
+                bonhommes[i].enVie = 0;
+            }
+        }
+        for(i = 0; i < NB_ANIMAUX; i++) {
+            if(i != id && estEnVie(i, 1) && collision2(id, x, y, ANIMAL, i, ANIMAL)) {
+                printCollision(0, ANIMAL, i, ANIMAL);
+                return 0;
+            }
+        }
+        for(i = 0; i < NB_ARBRES; i++) {
+            if(collision2(id, x, y, ANIMAL, i, ARBRE)) {
+                printCollision(0, ANIMAL, i, ARBRE);
+                return 0;
+            }
+        }
+        for(i = 0; i < NB_MAISONS; i++) {
+            if(collision2(id, x, y, ANIMAL, i, MAISON)) {
+                printCollision(0, ANIMAL, i, MAISON);
+                return 0;
+            }
+        }
+    }
     return 1;
 }
 
@@ -433,8 +614,8 @@ void deplacer(int id, int type){
 }
 
 void modifierDirection(int id, int type){
-    double x = rand()%400;
-    double y = rand()%400;
+    double x = rand()%(LARGEUR_CARTE-10)+5;
+    double y = rand()%(LONGUEUR_CARTE-10)+5;
     double dx, dy, d;
 
     if(type == 0){//modif direction
@@ -465,6 +646,10 @@ void modifierDirection(int id, int type){
 }
 
 void deplacerAlea(int id, int type){
+    if(type)
+        printf("animal %d déplacement aléatoire\n", id);
+    else
+        printf("bonhomme %d déplacement aléatoire\n", id);
     if(type == 0 && bonhommes[id].isDepl == 0){
         modifierDirection(id, type);
     }else if(animaux[id].isDepl == 0){
@@ -474,6 +659,7 @@ void deplacerAlea(int id, int type){
 }
 
 void fuir(int id1, int id2){
+    printf("bonhomme %d veut fuir animal %d\n", id1, id2);
     double x, y, dx, dy, d;
 
     dx = bonhommes[id1].pos.x-animaux[id2].pos.x;
@@ -488,10 +674,16 @@ void fuir(int id1, int id2){
 }
 
 void attraper(int id1, int id2){
+    printf("animal %d veut attraper bonhomme %d\n", id1, id2);
     double x, y, dx, dy, d;
 
-    dx = animaux[id1].pos.x-bonhommes[id2].pos.x;
-    dy = animaux[id1].pos.y-bonhommes[id2].pos.y;
+    if(id2 == -1){
+        dx = animaux[id1].pos.x-joueur.pos.x;
+        dy = animaux[id1].pos.y-joueur.pos.y;
+    }else{
+        dx = animaux[id1].pos.x-bonhommes[id2].pos.x;
+        dy = animaux[id1].pos.y-bonhommes[id2].pos.y;
+    }
     d = sqrt(py(dx, dy));
     x = animaux[id1].pos.x+vitesse*dx/d;
     y = animaux[id1].pos.y+vitesse*dy/d;
