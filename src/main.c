@@ -18,6 +18,9 @@ bonhomme joueur;
 int debugMode = 0;
 int envol = 0;
 
+int action = 0;
+int gaucheInput = 0, droiteInput = 0, avantInput = 0, arriereInput = 0, hautInput = 0, basInput = 0;
+
 //int vueY=0;
 //int vueZ=0;
 
@@ -60,6 +63,8 @@ void jouer(){
 
     jouerBonhommes();
     jouerAnimaux();
+    jouerJoueur();
+
     verifieToutesCollisions();
 
     if(dernier())
@@ -78,6 +83,7 @@ void jouer(){
     dessiner();
 
     glutSwapBuffers();
+    glutPostRedisplay();
 }
 
 void GererSouris(int x, int y){
@@ -113,29 +119,29 @@ void GererSouris(int x, int y){
         chrono = clock();
     }
 }
-
 void GererClavier(unsigned char touche, int x, int y){
-    int action = 0;
+
+    action = 0;
+
     double x2, y2;
 
     if(touche == 'z'){
-        x2 = joueur.pos.x + joueur.direction.x;
-        y2 = joueur.pos.y + joueur.direction.y;
+        avantInput = 1;
         action = 1;
     }
+
     if(touche == 'd'){
-        x2 = joueur.pos.x - direction.x;
-        y2 = joueur.pos.y - direction.y;
+        droiteInput = 1;
         action = 1;
     }
+
     if(touche == 's'){
-        x2 = joueur.pos.x - joueur.direction.x;
-        y2 = joueur.pos.y - joueur.direction.y;
+        arriereInput = 1;
         action = 1;
     }
+
     if(touche == 'q'){
-        x2 = joueur.pos.x + direction.x;
-        y2 = joueur.pos.y + direction.y;
+        gaucheInput = 1;
         action = 1;
     }
     if(touche == 'r'){
@@ -145,24 +151,53 @@ void GererClavier(unsigned char touche, int x, int y){
     }
     if(envol){
         if(touche == 'w' && joueur.pos.z<HAUTEUR_CARTE-10){
-            joueur.pos.z += 1;
+            hautInput = 1;
+            action = 1;
         }
-        if(touche == 'x' && joueur.pos.z>5){
-            joueur.pos.z -= 1;
+
+        if(touche == 'x' && joueur.pos.z>INITIAL_Z){
+            basInput = 1;
+            action = 1;
         }
     }
     if(touche == '&'){
         exit(0);
     }
 
-    if(action && estAutorise(-1, x2, y2, 0)){
-        joueur.previousPos = joueur.pos;
-        joueur.pos.x = x2;
-        joueur.pos.y = y2;
+}
+
+void GererReleaseClavier(unsigned char touche, int x, int y){
+    printf("Released : %c\n", touche);
+    if(touche == 'z'){
+        avantInput = 0;
     }
+
+    if(touche == 'd'){
+        droiteInput = 0;
+    }
+
+    if(touche == 's'){
+        arriereInput = 0;
+    }
+
+    if(touche == 'q'){
+        gaucheInput = 0;
+    }
+
+    if(envol){
+        if(touche == 'w'){
+            hautInput = 0;
+        }
+
+        if(touche == 'x'){
+            basInput = 0;
+        }
+    }
+
 }
 
 int main(int argc, char **argv) {
+    printf("%d, %d, %d, %d\n", gaucheInput, droiteInput, avantInput, arriereInput);
     for(int i = 1; i < argc; ++i){
         if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--debug") == 0){
             debugMode = 1;
@@ -193,7 +228,7 @@ int main(int argc, char **argv) {
     glutIdleFunc(jouer);
     glutPassiveMotionFunc(GererSouris);
     glutKeyboardFunc(GererClavier);
-
+    glutKeyboardUpFunc(GererReleaseClavier);
     glutMainLoop();
 
     return 0;
