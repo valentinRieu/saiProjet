@@ -1,4 +1,8 @@
 #include "interaction.h"
+int invincibilite = 0;
+clock_t previousHit = 0;
+clock_t testInvincibilite;
+clock_t newHit;
 
 //Permet de savoir si le joueur ou un bonhomme est en vie
 int estEnVie(int id, int type){
@@ -142,7 +146,7 @@ void printCollision(int id1, type t1, int id2, type t2) {
 
     if(!debugMode)
         return;
-    
+
     char typ1[16], typ2[16];
 
     switch(t1) {
@@ -198,10 +202,10 @@ void separateHitboxes(point *pos1, rect *hb1, point *pos2, rect *hb2) {
     int dy = pos1->y - pos2->y;
 
     // Step 3: Determine minimum translation distance
-    int halfWidth1 = hb1->largeur / 2;
-    int halfWidth2 = hb2->largeur / 2;
-    int halfLength1 = hb1->longueur / 2;
-    int halfLength2 = hb2->longueur / 2;
+    int halfWidth1 = hb1->largeur;
+    int halfWidth2 = hb2->largeur;
+    int halfLength1 = hb1->longueur;
+    int halfLength2 = hb2->longueur;
 
     int minSeparationX = halfWidth1 + halfWidth2 - abs(dx);
     int minSeparationY = halfLength1 + halfLength2 - abs(dy);
@@ -211,19 +215,19 @@ void separateHitboxes(point *pos1, rect *hb1, point *pos2, rect *hb2) {
 
     // Step 4: Move hitboxes away from each other
     if (dx < 0) {
-        pos1->x -= separationX;
-        pos2->x += separationX;
+        pos1->x -= dx * 2;
+        pos2->x += dx * 2;
     } else {
-        pos1->x += separationX;
-        pos2->x -= separationX;
+        pos1->x += dx * 2;
+        pos2->x -= dx * 2;
     }
 
     if (dy < 0) {
-        pos1->y -= separationY;
-        pos2->y += separationY;
+        pos1->y -= dy * 2;
+        pos2->y += dy * 2;
     } else {
-        pos1->y += separationY;
-        pos2->y -= separationY;
+        pos1->y += dy * 2;
+        pos2->y -= dy * 2;
     }
 }
 
@@ -307,6 +311,7 @@ int collision(int id1, double x, double y, type t1, int id2, type t2) {
 
 //Test si l'élément d'id id et de type type peut se déplacer à la position (x,y)
 int estAutorise(int id, double x, double y, int type) {
+
     int i;
 
     if(x<=5 || x>=LARGEUR_CARTE-5 || y<=5 || y>=LONGUEUR_CARTE-5)
@@ -319,9 +324,94 @@ int estAutorise(int id, double x, double y, int type) {
                 return 0;
             }
         }
+
         for(i = 0; i < NB_ANIMAUX; i++) {
             if(estEnVie(i, 1) && collision(id, x, y, JOUEUR, i, ANIMAL)) {
                 printCollision(0, JOUEUR, i, ANIMAL);
+                if(!envol){
+                    if(!invincibilite) {
+                        printf("touché\n");
+                        if(previousHit == 0) {
+                            joueur.enVie--;
+                            previousHit = clock();
+                            invincibilite = 1;
+                            separateHitboxes(&joueur.pos, &joueur.hitBox, &animaux[i].pos, &animaux[i].hitBox);
+
+                            return 0;
+                        }
+                        newHit = clock();
+                        if((double)(newHit - previousHit) / CLOCKS_PER_SEC  > 1) {
+                            joueur.enVie--;
+                            previousHit = clock();
+                            invincibilite = 1;
+                            separateHitboxes(&joueur.pos, &joueur.hitBox, &animaux[i].pos, &animaux[i].hitBox);
+
+                            return 0;
+                        }
+                        return 0;
+                    }
+                    testInvincibilite = clock();
+                    if((double)(testInvincibilite - previousHit) / CLOCKS_PER_SEC > 1) {
+                        invincibilite = 0;
+                    }
+                    return 0;
+
+                }
+            }
+        }
+
+            for(i = 0; i < NB_ARBRES; i++) {
+                if(collision2(id, x, y, JOUEUR, i, ARBRE)) {
+                    printCollision(0, JOUEUR, i, ARBRE);
+                    return 0;
+                }
+            }
+
+            for(i = 0; i < NB_MAISONS; i++) {
+                if(collision2(id, x, y, JOUEUR, i, MAISON)) {
+                    printCollision(0, JOUEUR, i, MAISON);
+                    return 0;
+                }
+            }
+
+        } else if(type == 0){
+            if(estEnVie(-1, 0) && collision2(id, x, y, BONHOMME, 0, JOUEUR)){
+                printCollision(0, BONHOMME, 0, JOUEUR);
+                return 0;
+            }
+
+            for(i = 0; i < NB_BONHOMMES; i++) {
+                if(i != id && estEnVie(i, 0) && collision2(id, x, y, BONHOMME, i, BONHOMME)) {
+                    printCollision(0, BONHOMME, i, BONHOMME);
+                    return 0;
+                }
+            }
+
+            for(i = 0; i < NB_ANIMAUX; i++) {
+                if(estEnVie(i, 1) && collision2(id, x, y, BONHOMME, i, ANIMAL)) {
+                    printCollision(0, BONHOMME, i, ANIMAL);
+                    bonhommes[i].enVie = 0;
+                    return 0;
+                }
+            }
+
+            for(i = 0; i < NB_ARBRES; i++) {
+                if(collision2(id, x, y, BONHOMME, i, ARBRE)) {
+                    printCollision(0, BONHOMME, i, ARBRE);
+                    return 0;
+                }
+            }
+
+            for(i = 0; i < NB_MAISONS; i++) {
+                if(collision2(id, x, y, BONHOMME, i, MAISON)) {
+                    printCollision(0, BONHOMME, i, MAISON);
+                    return 0;
+                }
+            }
+
+        } else{
+            if(estEnVie(-1, 0) && collision2(id, x, y, ANIMAL, 0, JOUEUR)){
+                printCollision(0, ANIMAL, 0, JOUEUR);
                 if(!envol)
                     tuer(-1);
                 return 0;
@@ -399,10 +489,10 @@ int estAutorise(int id, double x, double y, int type) {
                 printCollision(0, ANIMAL, i, MAISON);
                 return 0;
             }
+
         }
+        return 1;
     }
-    return 1;
-}
 
 //Permet de déplacer un élément d'id id et de type type
 void deplacer(int id, int type){
@@ -474,7 +564,7 @@ void deplacerAlea(int id, int type){
         printf("animal %d déplacement aléatoire\n", id);
     else
         printf("bonhomme %d déplacement aléatoire\n", id);
-    
+
     if(type == 0 && bonhommes[id].isDepl == 0){
         modifierDirection(id, type);
     }else if(animaux[id].isDepl == 0){
@@ -508,7 +598,7 @@ void attraper(int id1, int id2){
 
     if(debugMode)
         printf("animal %d veut attraper bonhomme %d\n", id1, id2);
-    
+
     if(id2 == -1){
         dx = animaux[id1].pos.x-joueur.pos.x;
         dy = animaux[id1].pos.y-joueur.pos.y;
@@ -519,7 +609,7 @@ void attraper(int id1, int id2){
     d = sqrt(py(dx, dy));
     x = animaux[id1].pos.x-vitesse*dx/d;
     y = animaux[id1].pos.y-vitesse*dy/d;
-    
+
     if(estAutorise(id1, x, y, 1)){
         animaux[id1].pos.x = x;
         animaux[id1].pos.y = y;
@@ -530,7 +620,7 @@ void attraper(int id1, int id2){
 //Permet de tuer un bonhomme
 void tuer(int id){
     if(id == -1)
-        joueur.enVie = 0;
+        joueur.enVie--;
     else
         bonhommes[id].enVie = 0;
 }

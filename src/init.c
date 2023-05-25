@@ -140,7 +140,7 @@ void initAnimal(int x, int y, int i){
 
 //Permet d'initialiser le joueur
 void initJoueur(int x, int y, int z) {
-    joueur.enVie = 1;
+    joueur.enVie = 3;
     joueur.pos=(point){x, y, z};
     joueur.previousPos = joueur.pos;
     joueur.direction=(point){vitesse,0,5};
