@@ -14,6 +14,7 @@ extern double vitesse;
 extern point direction;
 extern int action;
 extern int envol;
+extern int debugMode;
 extern int gaucheInput, droiteInput, avantInput, arriereInput, hautInput, basInput;
 
 int estEnVie(int id, int type);
@@ -28,17 +29,11 @@ double py(double x, double y);
 
 int lePlusProche(int id, int type);
 
-int intersectionMaison(int id, double x, double y, int type);
+void printCollision(int id1, type t1, int id2, type t2);
 
-int intersectionArbre(int id, double x, double y, int type);
+void separateHitboxes(point *pos1, rect *hb1, point *pos2, rect *hb2);
 
-int intersectionBonhomme(int id, double x, double y, int type);
-
-int intersectionAnimal(int id, double x, double y, int type);
-
-int collision(int id1, type t1, int id2, type t2);
-
-void verifieToutesCollisions();
+int collision(int id1, double x, double y, type t1, int id2, type t2);
 
 int estAutorise(int id, double x, double y, int type);
 

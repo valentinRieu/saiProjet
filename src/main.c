@@ -21,30 +21,10 @@ int vitesseJeu = 1;
 int action = 0;
 int gaucheInput = 0, droiteInput = 0, avantInput = 0, arriereInput = 0, hautInput = 0, basInput = 0;
 
-//int vueY=0;
-//int vueZ=0;
-
 
 double angleY=0;
 double angleZ=0;
 clock_t chrono;
-
-
-
-//permet de dessiner l'origine du repère
-void origine(){
-    glBegin(GL_LINES);
-    glColor3f(1, 0, 0);
-    glVertex3f(0,0,0);
-    glVertex3f(1000,0,0);
-    glColor3f(0, 1, 0);
-    glVertex3f(0,0,0);
-    glVertex3f(0,1000,0);
-    glColor3f(0, 0, 1);
-    glVertex3f(0,0,0);
-    glVertex3f(0,0,1000);
-    glEnd();
-}
 
 void gagne(){
     printf("GAGNE\n");
@@ -80,13 +60,10 @@ void draw2D() {
 
 
 void jouer(){
-
-
+    
     jouerBonhommes();
     jouerAnimaux();
     jouerJoueur();
-
-    //verifieToutesCollisions();
 
     if(dernier())
         gagne();
@@ -101,7 +78,7 @@ void jouer(){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //origine();
+    
     glPushMatrix();
     dessiner();
 
@@ -215,6 +192,7 @@ void GererClavier(unsigned char touche, int x, int y){
 void GererReleaseClavier(unsigned char touche, int x, int y){
     if(debugMode)
         printf("Released : %c en %d %d\n", touche, x, y);
+    
     if(touche == 'z'){
         avantInput = 0;
     }
