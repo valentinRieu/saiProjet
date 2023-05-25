@@ -37,7 +37,6 @@ void jouerBonhommes(){
 //Permet de faire jouer les animaux
 void jouerAnimaux(){
     int i, j;
-    invincibilite = 0;
     printf("animaux en cyan\n");
     for(i=0;i<NB_ANIMAUX;i++){
         if(!estEnVie(i, 1))
@@ -413,14 +412,14 @@ int estAutorise(int id, double x, double y, int type) {
 
     } else {
         if(estEnVie(-1, 0) && collision(id, x, y, ANIMAL, 0, JOUEUR)){
-            printCollision(0, ANIMAL, 0, JOUEUR);
+            printCollision(id, ANIMAL, 0, JOUEUR);
             if(!envol)
                 tuer(-1);
             return 0;
         }
         for(i = 0; i < NB_BONHOMMES; i++) {
             if(estEnVie(i, 0) && collision(id, x, y, ANIMAL, i, BONHOMME)) {
-                printCollision(0, ANIMAL, i, BONHOMME);
+                printCollision(id, ANIMAL, i, BONHOMME);
                 tuer(i);
             }
         }
