@@ -60,35 +60,29 @@ void jouerJoueur() {
     if(avantInput){
         x2 += joueur.direction.x;
         y2 += joueur.direction.y;
-        avantInput = 0;
     }
 
     if(arriereInput){
         x2 -= joueur.direction.x;
         y2 -= joueur.direction.y;
-        arriereInput = 0;
     }
 
     if(gaucheInput){
         x2 += direction.x;
         y2 += direction.y;
-        gaucheInput = 0;
     }
 
     if(droiteInput){
         x2 -= direction.x;
         y2 -= direction.y;
-        droiteInput = 0;
     }
     if(envol){
         if(hautInput){
             z2 += 1;
-            hautInput = 0;
         }
 
         if(basInput){
             z2 -= 1;
-            basInput = 0;
         }
     } else z2 = INITIAL_Z;
     if(estAutorise(-1, x2, y2, 0))
