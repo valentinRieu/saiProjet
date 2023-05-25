@@ -45,6 +45,55 @@ void jouerAnimaux(){
     }
 }
 
+
+void jouerJoueur() {
+    double x2, y2;
+    double z2;
+    x2 = joueur.pos.x;
+    y2 = joueur.pos.y;
+    z2 = joueur.pos.z;
+    if(!action){
+        return;
+    }
+    joueur.previousPos = joueur.pos;
+    if(avantInput){
+        x2 += joueur.direction.x;
+        y2 += joueur.direction.y;
+        avantInput = 0;
+    }
+
+    if(arriereInput){
+        x2 -= joueur.direction.x;
+        y2 -= joueur.direction.y;
+        arriereInput = 0;
+    }
+
+    if(gaucheInput){
+        x2 += direction.x;
+        y2 += direction.y;
+        gaucheInput = 0;
+    }
+
+    if(droiteInput){
+        x2 -= direction.x;
+        y2 -= direction.y;
+        droiteInput = 0;
+    }
+    if(envol){
+        if(hautInput){
+            z2 += 1;
+            hautInput = 0;
+        }
+
+        if(basInput){
+            z2 -= 1;
+            basInput = 0;
+        }
+    } else z2 = INITIAL_Z;
+    joueur.pos = (point){x2, y2, z2};
+
+}
+
 //théorème de pythagore pour les surfaces
 double py(double x, double y){
     return x*x+y*y;
@@ -234,6 +283,43 @@ void printCollision(int id1, type t1, int id2, type t2) {
 
     printf("collision entre entité de type joueur d'id %d, et entité de type %s d'id %d\n\n",
            id1, typ2, id2);
+}
+
+
+void separateHitboxes(point *pos1, rect *hb1, point *pos2, rect *hb2) {
+
+    // Step 2: Calculate collision direction
+    int dx = pos1->x - pos2->x;
+    int dy = pos1->y - pos2->y;
+
+    // Step 3: Determine minimum translation distance
+    int halfWidth1 = hb1->largeur / 2;
+    int halfWidth2 = hb2->largeur / 2;
+    int halfLength1 = hb1->longueur / 2;
+    int halfLength2 = hb2->longueur / 2;
+
+    int minSeparationX = halfWidth1 + halfWidth2 - abs(dx);
+    int minSeparationY = halfLength1 + halfLength2 - abs(dy);
+
+    int separationX = (minSeparationX > 0) ? minSeparationX : 0;
+    int separationY = (minSeparationY > 0) ? minSeparationY : 0;
+
+    // Step 4: Move hitboxes away from each other
+    if (dx < 0) {
+        pos1->x -= separationX;
+        pos2->x += separationX;
+    } else {
+        pos1->x += separationX;
+        pos2->x -= separationX;
+    }
+
+    if (dy < 0) {
+        pos1->y -= separationY;
+        pos2->y += separationY;
+    } else {
+        pos1->y += separationY;
+        pos2->y -= separationY;
+    }
 }
 
 void verifieToutesCollisions() {

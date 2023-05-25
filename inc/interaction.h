@@ -11,12 +11,18 @@ extern bonhomme bonhommes[NB_BONHOMMES];
 extern rect carte;
 extern bonhomme joueur;
 extern double vitesse;
+extern point direction;
+extern int action;
+extern int envol;
+extern int gaucheInput, droiteInput, avantInput, arriereInput, hautInput, basInput;
 
 int estEnVie(int id, int type);
 
 void jouerBonhommes();
 
 void jouerAnimaux();
+
+void jouerJoueur();
 
 double py(double x, double y);
 
