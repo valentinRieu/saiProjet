@@ -95,10 +95,10 @@ void init(){
             initJoueur(rx, ry, INITIAL_Z);
         }
 
-        rx+=50;
+        rx+=60;
         if(rx>350){
             rx=25;
-            ry+=50;
+            ry+=60;
         }
     }
 }
