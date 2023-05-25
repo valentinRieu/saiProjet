@@ -17,8 +17,6 @@ void dessinerCarreY(int x1, int x2, int y, int z1, int z2);
 
 void dessinerCarreZ(int x1, int x2, int y1, int y2, int z);
 
-void dessinerCarre(point p1, point p2, point p3, point p4);
-
 void dessiner();
 
 void dessinerCarte();

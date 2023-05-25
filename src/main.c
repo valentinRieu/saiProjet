@@ -21,30 +21,10 @@ int vitesseJeu = 1;
 int action = 0;
 int gaucheInput = 0, droiteInput = 0, avantInput = 0, arriereInput = 0, hautInput = 0, basInput = 0;
 
-//int vueY=0;
-//int vueZ=0;
-
 
 double angleY=0;
 double angleZ=0;
 clock_t chrono;
-
-
-
-//permet de dessiner l'origine du repère
-void origine(){
-    glBegin(GL_LINES);
-    glColor3f(1, 0, 0);
-    glVertex3f(0,0,0);
-    glVertex3f(1000,0,0);
-    glColor3f(0, 1, 0);
-    glVertex3f(0,0,0);
-    glVertex3f(0,1000,0);
-    glColor3f(0, 0, 1);
-    glVertex3f(0,0,0);
-    glVertex3f(0,0,1000);
-    glEnd();
-}
 
 void gagne(){
     printf("GAGNE\n");
@@ -65,7 +45,7 @@ int dernier() {
     return 1;
 }
 
-void draw2D() {
+void drawCrosshair(){
     glColor3f(1.0f, 1.0f, 1.0f); // Set the color of the cross to white.
     glBegin(GL_LINES);
     glVertex2f(TAILLE_ECRAN / 2.0f, (TAILLE_ECRAN / 2.0f) - 15); // Start at the middle of the screen on the bottom.
@@ -78,20 +58,65 @@ void draw2D() {
     glEnd();
 }
 
+void drawCadre2d(point bl, point tr){
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glBegin(GL_LINE_STRIP);
+    glVertex2f(bl.x, bl.y);
+    glVertex2f(bl.x, tr.y);
+    glVertex2f(tr.x, tr.y);
+    glVertex2f(tr.x, bl.y);
+    glVertex2f(bl.x, bl.y);
+    glEnd();
+}
+
+void drawCarre2d(point bl, point tr){
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glBegin(GL_QUADS);
+    glVertex2f(bl.x, bl.y);
+    glVertex2f(bl.x, tr.y);
+    glVertex2f(tr.x, tr.y);
+    glVertex2f(tr.x, bl.y);
+    glEnd();
+}
+
+void drawHealthBar(){
+    point bl, tr;
+    for(int i = 0; i < MAX_HEALTH; i++){
+        bl = (point){
+            TAILLE_ECRAN - (100*(joueur.enVie - i) - 100) - 30,
+            30,
+            0};
+        tr = (point){
+            TAILLE_ECRAN - (100*(joueur.enVie - i) - 40) - 30,
+            180,
+            0};
+        if(i < joueur.enVie){
+            drawCarre2d(bl, tr);
+        } else {
+            drawCadre2d(bl, tr);
+        }
+    }
+}
+
+void draw2D() {
+    drawCrosshair();
+    drawHealthBar();
+}
 
 void jouer(){
 
-
-    jouerBonhommes();
-    jouerAnimaux();
-    jouerJoueur();
-
-    //verifieToutesCollisions();
-
     if(dernier())
         gagne();
-    if(!joueur.enVie)
+    else if(!joueur.enVie)
         perdu();
+    else {
+        jouerBonhommes();
+        jouerAnimaux();
+        jouerJoueur();
+    }
+    //verifieToutesCollisions();
+
+
 
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
@@ -101,7 +126,7 @@ void jouer(){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //origine();
+
     glPushMatrix();
     dessiner();
 
@@ -215,6 +240,7 @@ void GererClavier(unsigned char touche, int x, int y){
 void GererReleaseClavier(unsigned char touche, int x, int y){
     if(debugMode)
         printf("Released : %c en %d %d\n", touche, x, y);
+
     if(touche == 'z'){
         avantInput = 0;
     }

@@ -30,4 +30,6 @@
 #define INITIAL_X 200
 #define INITIAL_Y 200
 #define INITIAL_Z 5
+
+#define MAX_HEALTH 3
 #endif
