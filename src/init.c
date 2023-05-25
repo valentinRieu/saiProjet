@@ -3,7 +3,7 @@
 void init(){
     int i, j, i1=0,i2=0,i3=0,i4=0;
     int rx=20, ry=20;
-
+    srand(time(NULL));
     carte = (rect){LARGEUR_CARTE, LONGUEUR_CARTE};
 
     for(i=0;i<NB_MAISONS+NB_ARBRES+NB_ANIMAUX+NB_BONHOMMES;i++){
