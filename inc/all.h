@@ -18,10 +18,10 @@
 #define Y_MIN -2048
 #define Y_MAX 2048
 
-#define NB_MAISONS 10
-#define NB_ARBRES 10
-#define NB_ANIMAUX 10
-#define NB_BONHOMMES 10
+#define NB_MAISONS 8
+#define NB_ARBRES 8
+#define NB_ANIMAUX 8
+#define NB_BONHOMMES 8
 
 #define HAUTEUR_CARTE 200
 #define LONGUEUR_CARTE 400
