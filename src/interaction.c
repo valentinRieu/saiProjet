@@ -360,139 +360,59 @@ int estAutorise(int id, double x, double y, int type) {
             }
         }
 
-            for(i = 0; i < NB_ARBRES; i++) {
-                if(collision2(id, x, y, JOUEUR, i, ARBRE)) {
-                    printCollision(0, JOUEUR, i, ARBRE);
-                    return 0;
-                }
-            }
-
-            for(i = 0; i < NB_MAISONS; i++) {
-                if(collision2(id, x, y, JOUEUR, i, MAISON)) {
-                    printCollision(0, JOUEUR, i, MAISON);
-                    return 0;
-                }
-            }
-
-        } else if(type == 0){
-            if(estEnVie(-1, 0) && collision2(id, x, y, BONHOMME, 0, JOUEUR)){
-                printCollision(0, BONHOMME, 0, JOUEUR);
-                return 0;
-            }
-
-            for(i = 0; i < NB_BONHOMMES; i++) {
-                if(i != id && estEnVie(i, 0) && collision2(id, x, y, BONHOMME, i, BONHOMME)) {
-                    printCollision(0, BONHOMME, i, BONHOMME);
-                    return 0;
-                }
-            }
-
-            for(i = 0; i < NB_ANIMAUX; i++) {
-                if(estEnVie(i, 1) && collision2(id, x, y, BONHOMME, i, ANIMAL)) {
-                    printCollision(0, BONHOMME, i, ANIMAL);
-                    bonhommes[i].enVie = 0;
-                    return 0;
-                }
-            }
-
-            for(i = 0; i < NB_ARBRES; i++) {
-                if(collision2(id, x, y, BONHOMME, i, ARBRE)) {
-                    printCollision(0, BONHOMME, i, ARBRE);
-                    return 0;
-                }
-            }
-
-            for(i = 0; i < NB_MAISONS; i++) {
-                if(collision2(id, x, y, BONHOMME, i, MAISON)) {
-                    printCollision(0, BONHOMME, i, MAISON);
-                    return 0;
-                }
-            }
-
-        } else{
-            if(estEnVie(-1, 0) && collision2(id, x, y, ANIMAL, 0, JOUEUR)){
-                printCollision(0, ANIMAL, 0, JOUEUR);
-                if(!envol)
-                    tuer(-1);
-                return 0;
-            }
-        }
         for(i = 0; i < NB_ARBRES; i++) {
             if(collision(id, x, y, JOUEUR, i, ARBRE)) {
                 printCollision(0, JOUEUR, i, ARBRE);
                 return 0;
             }
         }
+
         for(i = 0; i < NB_MAISONS; i++) {
             if(collision(id, x, y, JOUEUR, i, MAISON)) {
                 printCollision(0, JOUEUR, i, MAISON);
                 return 0;
             }
         }
-    }else if(type == 0){
+
+    }
+    else if(type == 0){
         if(estEnVie(-1, 0) && collision(id, x, y, BONHOMME, 0, JOUEUR)){
             printCollision(0, BONHOMME, 0, JOUEUR);
             return 0;
         }
+
         for(i = 0; i < NB_BONHOMMES; i++) {
             if(i != id && estEnVie(i, 0) && collision(id, x, y, BONHOMME, i, BONHOMME)) {
                 printCollision(0, BONHOMME, i, BONHOMME);
                 return 0;
             }
         }
+
         for(i = 0; i < NB_ANIMAUX; i++) {
             if(estEnVie(i, 1) && collision(id, x, y, BONHOMME, i, ANIMAL)) {
                 printCollision(0, BONHOMME, i, ANIMAL);
-                tuer(i);
+                bonhommes[i].enVie = 0;
                 return 0;
             }
         }
+
         for(i = 0; i < NB_ARBRES; i++) {
             if(collision(id, x, y, BONHOMME, i, ARBRE)) {
                 printCollision(0, BONHOMME, i, ARBRE);
                 return 0;
             }
         }
+
         for(i = 0; i < NB_MAISONS; i++) {
             if(collision(id, x, y, BONHOMME, i, MAISON)) {
                 printCollision(0, BONHOMME, i, MAISON);
                 return 0;
             }
         }
-    }else{
-        if(estEnVie(-1, 0) && collision(id, x, y, ANIMAL, 0, JOUEUR)){
-            printCollision(0, ANIMAL, 0, JOUEUR);
-            if(!envol)
-                tuer(-1);
-            return 0;
-        }
-        for(i = 0; i < NB_BONHOMMES; i++) {
-            if(estEnVie(i, 0) && collision(id, x, y, ANIMAL, i, BONHOMME)) {
-                printCollision(0, ANIMAL, i, BONHOMME);
-                tuer(i);
-            }
-        }
-        for(i = 0; i < NB_ANIMAUX; i++) {
-            if(i != id && estEnVie(i, 1) && collision(id, x, y, ANIMAL, i, ANIMAL)) {
-                printCollision(0, ANIMAL, i, ANIMAL);
-                return 0;
-            }
-        }
-        for(i = 0; i < NB_ARBRES; i++) {
-            if(collision(id, x, y, ANIMAL, i, ARBRE)) {
-                printCollision(0, ANIMAL, i, ARBRE);
-                return 0;
-            }
-        }
-        for(i = 0; i < NB_MAISONS; i++) {
-            if(collision(id, x, y, ANIMAL, i, MAISON)) {
-                printCollision(0, ANIMAL, i, MAISON);
-                return 0;
-            }
 
-        }
-        return 1;
     }
+    return 1;
+}
 
 //Permet de déplacer un élément d'id id et de type type
 void deplacer(int id, int type){
